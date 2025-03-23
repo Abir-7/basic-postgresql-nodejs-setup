@@ -1,0 +1,15 @@
+{
+    "keep": {
+        "days": true,
+        "amount": 30
+    },
+    "auditLog": "C:\\Abir-007\\basic backend setup\\postgresql-typeorm-pg-node-express-ts\\logs\\.4e7114968e4198c185814b700f7de4310765b503-audit.json",
+    "files": [
+        {
+            "date": 1742284142765,
+            "name": "C:\\Abir-007\\basic backend setup\\postgresql-typeorm-pg-node-express-ts\\logs\\2025-03-18-rejections.log",
+            "hash": "9e48ff5b1fbd4992c994adb41942c4bc17ee4cf46252790ab2cc33908ee58d10"
+        }
+    ],
+    "hashType": "sha256"
+}

@@ -39,8 +39,8 @@ export const AdminProfileEntity = new EntitySchema<IAdminProfile>({
     user: {
       type: "one-to-one",
       target: "User",
-      joinColumn: true, // Indicates this is the owning side.
-      inverseSide: "adminProfile", // Matches the inverseSide specified in the User entity.
+      joinColumn: true,
+      inverseSide: "adminProfile",
     },
   },
 });

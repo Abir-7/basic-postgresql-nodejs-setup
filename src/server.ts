@@ -19,7 +19,7 @@ process.on("unhandledRejection", (err) => {
 
 const main = async () => {
   await myDataSource.initialize();
-  logger.info("MongoDB connected");
+  logger.info("PostgreSql Connected");
 
   server.listen(
     Number(appConfig.server.port),

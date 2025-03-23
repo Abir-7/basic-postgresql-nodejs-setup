@@ -1,7 +1,7 @@
 import { EntitySchema } from "typeorm";
 import { IBaseUser } from "./user.interface";
 
-export const User = new EntitySchema<IBaseUser>({
+export const UserEntity = new EntitySchema<IBaseUser>({
   name: "User",
   tableName: "users",
   columns: {

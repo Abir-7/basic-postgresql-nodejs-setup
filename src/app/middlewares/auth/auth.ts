@@ -6,6 +6,9 @@ import { TUserRole } from "../../interface/auth.interface";
 import { jsonWebToken } from "../../utils/jwt/jwt";
 import { appConfig } from "../../config";
 
+
+
+// need to put this code in try catch
 export const auth =
   (...userRole: TUserRole[]) =>
   async (req: Request, res: Response, next: NextFunction): Promise<void> => {

@@ -2,7 +2,7 @@ import express from "express";
 import cors from "cors";
 import router from "./app/routes";
 import http from "http";
-
+import path from "path";
 import cookieParser from "cookie-parser";
 import { globalErrorHandler } from "./app/middlewares/globalErrorHandler";
 import { noRouteFound } from "./app/utils/noRouteFound";
@@ -24,7 +24,7 @@ app.use("/api", router);
 app.get("/", (req, res) => {
   res.send("Hello World! This app name is Ai_Finance_Hub");
 });
-app.use("/uploads", express.static("uploads"));
+app.use(express.static(path.join(process.cwd(), "uploads")));
 app.use(globalErrorHandler);
 app.use(noRouteFound);
 

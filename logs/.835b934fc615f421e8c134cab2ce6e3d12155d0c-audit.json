@@ -1,0 +1,15 @@
+{
+    "keep": {
+        "days": true,
+        "amount": 30
+    },
+    "auditLog": "C:\\Abir-007\\Practise\\basic-postgresql-nodejs-setup\\logs\\.835b934fc615f421e8c134cab2ce6e3d12155d0c-audit.json",
+    "files": [
+        {
+            "date": 1747810020080,
+            "name": "C:\\Abir-007\\Practise\\basic-postgresql-nodejs-setup\\logs\\2025-05-21-rejections.log",
+            "hash": "8e2dc13d9d56714209614868dc82b3bf26ec18e91f6ac01e35ebf5a7e6fe82a9"
+        }
+    ],
+    "hashType": "sha256"
+}

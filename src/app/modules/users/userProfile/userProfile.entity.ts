@@ -1,46 +1,52 @@
-import { EntitySchema } from "typeorm";
-import { IUserProfile } from "./userProfile.interface";
+import {
+  Entity,
+  Column,
+  OneToOne,
+  JoinColumn,
+  PrimaryGeneratedColumn,
+} from "typeorm";
+import { User } from "../user/user.entity";
 
-export const UserProfileEntity = new EntitySchema<IUserProfile>({
-  name: "UserProfile",
-  tableName: "user_profiles",
-  columns: {
-    fullName: {
-      type: "varchar",
-    },
-    nickname: {
-      type: "varchar",
-      nullable: true,
-    },
-    dateOfBirth: {
-      type: "date",
-      nullable: true,
-    },
-    email: {
-      type: "varchar",
-    },
-    phone: {
-      type: "varchar",
-      nullable: true,
-    },
-    address: {
-      type: "varchar",
-      nullable: true,
-    },
-    image: {
-      type: "varchar",
-      nullable: true,
-    },
-    userId: {
-      type: "uuid",
-    },
-  },
-  relations: {
-    user: {
-      type: "one-to-one",
-      target: "User",
-      joinColumn: true,
-      inverseSide: "userProfile",
-    },
-  },
-});
+export interface IUserProfile {
+  id: string;
+  fullName: string;
+  nickname?: string;
+  dateOfBirth?: Date;
+  email: string;
+  phone?: string;
+  address?: string;
+  image?: string;
+  user: User;
+}
+
+@Entity({ name: "user_profiles" })
+export class UserProfile {
+  @PrimaryGeneratedColumn("uuid")
+  id!: string; // you should add an ID column, missing in EntitySchema
+
+  @Column({ type: "varchar" })
+  fullName!: string;
+
+  @Column({ type: "varchar", nullable: true })
+  nickname?: string;
+
+  @Column({ type: "date", nullable: true })
+  dateOfBirth?: Date;
+
+  @Column({ type: "varchar" })
+  email!: string;
+
+  @Column({ type: "varchar", nullable: true })
+  phone?: string;
+
+  @Column({ type: "varchar", nullable: true })
+  address?: string;
+
+  @Column({ type: "varchar", nullable: true })
+  image?: string;
+
+  // Relation with User entity - One-to-One
+  @OneToOne(() => User, (user) => user.userProfile)
+  @JoinColumn({ name: "userId" }) // foreign key column
+  user!: User;
+}

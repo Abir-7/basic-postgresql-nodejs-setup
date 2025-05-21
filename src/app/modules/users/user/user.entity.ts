@@ -1,59 +1,64 @@
-import { EntitySchema } from "typeorm";
-import { IBaseUser } from "./user.interface";
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  CreateDateColumn,
+  UpdateDateColumn,
+  OneToOne,
+  JoinColumn,
+} from "typeorm";
+import { UserAuthentication } from "../userAuthentication/user_authentication.entity";
+import { AdminProfile } from "../adminProfile/adminProfile.entity";
+import { UserProfile } from "../userProfile/userProfile.entity";
 
-export const UserEntity = new EntitySchema<IBaseUser>({
-  name: "User",
-  tableName: "users",
-  columns: {
-    id: {
-      type: "uuid",
-      primary: true,
-      generated: "uuid",
-    },
-    email: {
-      type: "varchar",
-      unique: true,
-    },
-    role: {
-      type: "enum",
-      enum: ["admin", "user", "guest"],
-      default: "user",
-    },
-    password: {
-      type: "varchar",
-    },
-    isVerified: {
-      type: "boolean",
-      default: false,
-    },
-    needToResetPass: {
-      type: "boolean",
-      default: false,
-    },
-    createdAt: {
-      type: "timestamp",
-      createDate: true,
-    },
-    updatedAt: {
-      type: "timestamp",
-      updateDate: true,
-    },
-  },
-  relations: {
-    authentication: {
-      type: "one-to-one",
-      target: "UserAuthentication",
-      inverseSide: "user",
-    },
-    adminProfile: {
-      type: "one-to-one",
-      target: "AdminProfile",
-      inverseSide: "user", // When the user is an admin, this relation points to the admin profile.
-    },
-    userProfile: {
-      type: "one-to-one",
-      target: "UserProfile",
-      inverseSide: "user", // When the user is a standard user, this relation points to the user profile.
-    },
-  },
-});
+export type UserRole = "admin" | "user" | "guest";
+
+@Entity({ name: "users" })
+export class User {
+  @PrimaryGeneratedColumn("uuid")
+  id!: string;
+
+  @Column({ type: "varchar", unique: true })
+  email!: string;
+
+  @Column({ type: "enum", enum: ["admin", "user", "guest"], default: "user" })
+  role!: UserRole;
+
+  @Column({ type: "varchar" })
+  password!: string;
+
+  @Column({ type: "boolean", default: false })
+  isVerified!: boolean;
+
+  @Column({ type: "boolean", default: false })
+  needToResetPass!: boolean;
+
+  @CreateDateColumn({ type: "timestamp" })
+  createdAt!: Date;
+
+  @UpdateDateColumn({ type: "timestamp" })
+  updatedAt!: Date;
+
+  // Relations
+
+  @OneToOne(() => UserAuthentication, (authentication) => authentication.user, {
+    cascade: true,
+    eager: true, // load automatically with User; optional
+  })
+  @JoinColumn() // owns the relation (FK stored here)
+  authentication!: UserAuthentication;
+
+  @OneToOne(() => AdminProfile, (adminProfile) => adminProfile.user, {
+    cascade: true,
+    eager: true,
+  })
+  @JoinColumn()
+  adminProfile?: AdminProfile; // optional since only admins have this
+
+  @OneToOne(() => UserProfile, (userProfile) => userProfile.user, {
+    cascade: true,
+    eager: true,
+  })
+  @JoinColumn()
+  userProfile?: UserProfile; // optional since only users have this
+}

@@ -1,46 +1,51 @@
-import { EntitySchema } from "typeorm";
-import { IAdminProfile } from "./adminProfile.interface";
+import {
+  Entity,
+  Column,
+  OneToOne,
+  JoinColumn,
+  PrimaryGeneratedColumn,
+} from "typeorm";
+import { User } from "../user/user.entity";
 
-export const AdminProfileEntity = new EntitySchema<IAdminProfile>({
-  name: "AdminProfile",
-  tableName: "admin_profiles",
-  columns: {
-    fullName: {
-      type: "varchar",
-    },
-    nickname: {
-      type: "varchar",
-      nullable: true,
-    },
-    dateOfBirth: {
-      type: "date",
-      nullable: true,
-    },
-    email: {
-      type: "varchar",
-    },
-    phone: {
-      type: "varchar",
-      nullable: true,
-    },
-    address: {
-      type: "varchar",
-      nullable: true,
-    },
-    image: {
-      type: "varchar",
-      nullable: true,
-    },
-    userId: {
-      type: "uuid",
-    },
-  },
-  relations: {
-    user: {
-      type: "one-to-one",
-      target: "User",
-      joinColumn: true,
-      inverseSide: "adminProfile",
-    },
-  },
-});
+export interface IAdminProfile {
+  id: string;
+  fullName: string;
+  nickname?: string;
+  dateOfBirth?: Date;
+  email: string;
+  phone?: string;
+  address?: string;
+  image?: string;
+  user: User;
+}
+
+@Entity({ name: "admin_profiles" })
+export class AdminProfile {
+  @PrimaryGeneratedColumn("uuid")
+  id!: string; // add primary key column
+
+  @Column({ type: "varchar" })
+  fullName!: string;
+
+  @Column({ type: "varchar", nullable: true })
+  nickname?: string;
+
+  @Column({ type: "date", nullable: true })
+  dateOfBirth?: Date;
+
+  @Column({ type: "varchar" })
+  email!: string;
+
+  @Column({ type: "varchar", nullable: true })
+  phone?: string;
+
+  @Column({ type: "varchar", nullable: true })
+  address?: string;
+
+  @Column({ type: "varchar", nullable: true })
+  image?: string;
+
+  @OneToOne(() => User, (user) => user.adminProfile)
+  @JoinColumn({ name: "userId" }) // foreign key column
+  user!: User;
+}

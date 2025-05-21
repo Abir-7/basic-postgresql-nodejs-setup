@@ -33,6 +33,6 @@ export class UserAuthentication {
   @OneToOne(() => User, (user) => user.authentication, {
     onDelete: "CASCADE",
   })
-  @JoinColumn({ name: "userId" }) // owns the FK column userId
+  // @JoinColumn({ name: "userId" }) // owns the FK column userId
   user!: User;
 }

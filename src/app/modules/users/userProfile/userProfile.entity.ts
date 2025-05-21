@@ -47,6 +47,5 @@ export class UserProfile {
 
   // Relation with User entity - One-to-One
   @OneToOne(() => User, (user) => user.userProfile)
-  @JoinColumn({ name: "userId" }) // foreign key column
   user!: User;
 }

@@ -103,3 +103,12 @@
 {"level":"info","message":"Example app listening on port 5000 & ip:192.168.10.18","service":"your-service-name","timestamp":"2025-05-21 13:46:25"}
 {"level":"info","message":"PostgreSql Connected","service":"your-service-name","timestamp":"2025-05-21 13:46:31"}
 {"level":"info","message":"Example app listening on port 5000 & ip:192.168.10.18","service":"your-service-name","timestamp":"2025-05-21 13:46:31"}
+{"level":"info","message":"PostgreSql Connected","service":"your-service-name","timestamp":"2025-05-21 14:34:19"}
+{"level":"info","message":"Example app listening on port 5000 & ip:192.168.10.18","service":"your-service-name","timestamp":"2025-05-21 14:34:19"}
+{"level":"info","message":"PostgreSql Connected","service":"your-service-name","timestamp":"2025-05-21 14:39:18"}
+{"level":"info","message":"Example app listening on port 5000 & ip:192.168.10.18","service":"your-service-name","timestamp":"2025-05-21 14:39:18"}
+{"level":"info","message":"PostgreSql Connected","service":"your-service-name","timestamp":"2025-05-21 14:40:38"}
+{"level":"info","message":"Example app listening on port 5000 & ip:192.168.10.18","service":"your-service-name","timestamp":"2025-05-21 14:40:38"}
+{"level":"error","message":"Driver not Connected","service":"your-service-name","timestamp":"2025-05-21 14:48:24"}
+{"level":"error","message":"Driver not Connected","service":"your-service-name","timestamp":"2025-05-21 14:48:31"}
+{"level":"error","message":"Driver not Connected","service":"your-service-name","timestamp":"2025-05-21 14:48:40"}

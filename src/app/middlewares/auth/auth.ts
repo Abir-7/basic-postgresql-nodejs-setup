@@ -1,12 +1,12 @@
 import { NextFunction, Request, Response } from "express";
 import AppError from "../../errors/AppError";
 import status from "http-status";
-import { TUserRole } from "../../interface/auth.interface";
+import { TUserRole } from "./auth.interface";
 
 import { jsonWebToken } from "../../utils/jwt/jwt";
 import { appConfig } from "../../config";
-
-
+import { myDataSource } from "../../db/database";
+import { User } from "../../modules/users/user/user.entity";
 
 // need to put this code in try catch
 export const auth =
@@ -29,7 +29,12 @@ export const auth =
       appConfig.jwt.jwt_access_secret as string
     );
     //! need to fetch from db
-    const userData = { email: "sdsd", role: "ddd" };
+    const userRepo = myDataSource.getRepository(User);
+
+    const userData = await userRepo.findOne({
+      where: { id: decodedData.userId },
+      relations: ["adminProfile", "authentication", "userProfile"],
+    });
 
     if (!userData) {
       return next(new AppError(status.UNAUTHORIZED, "You are not authorized"));

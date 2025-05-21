@@ -1,8 +1,8 @@
 import { myDataSource } from "../../../db/database";
 import getHashedPassword from "../../../utils/helper/getHashedPassword";
-import { IAdminProfile } from "../adminProfile/adminProfile.interface";
-import { IUserProfile } from "../userProfile/userProfile.interface";
-import { IBaseUser } from "./user.interface";
+import { AdminProfile } from "../adminProfile/adminProfile.entity";
+import { UserProfile } from "../userProfile/userProfile.entity";
+import { User } from "./user.entity";
 
 const createUser = async (data: {
   email: string;
@@ -20,7 +20,7 @@ const createUser = async (data: {
       const savedUser = (await transactionalEntityManager.save(
         "User",
         user
-      )) as IBaseUser;
+      )) as User;
 
       const userProfile = transactionalEntityManager.create("UserProfile", {
         fullName: data.fullName,
@@ -46,7 +46,7 @@ const createUser = async (data: {
 const updateProfileImage = async (path: string, email: string) => {};
 
 const updateProfileData = async (
-  userdata: Partial<IAdminProfile> | Partial<IUserProfile>,
+  userdata: Partial<AdminProfile> | Partial<UserProfile>,
   email: string
 ) => {};
 

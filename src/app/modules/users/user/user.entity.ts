@@ -10,8 +10,7 @@ import {
 import { UserAuthentication } from "../userAuthentication/user_authentication.entity";
 import { AdminProfile } from "../adminProfile/adminProfile.entity";
 import { UserProfile } from "../userProfile/userProfile.entity";
-
-export type UserRole = "admin" | "user" | "guest";
+import { TUserRole } from "../../../middlewares/auth/auth.interface";
 
 @Entity({ name: "users" })
 export class User {
@@ -22,7 +21,7 @@ export class User {
   email!: string;
 
   @Column({ type: "enum", enum: ["admin", "user", "guest"], default: "user" })
-  role!: UserRole;
+  role!: TUserRole;
 
   @Column({ type: "varchar" })
   password!: string;

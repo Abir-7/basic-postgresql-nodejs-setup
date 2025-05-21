@@ -1,4 +1,4 @@
-import { IAuthData } from "../../interface/auth.interface";
+import { IAuthData } from "./auth.interface";
 
 declare global {
   namespace Express {

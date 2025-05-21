@@ -12,6 +12,6 @@ export const myDataSource = new DataSource({
   password: "postgres",
   database: "testdb",
   entities: [User, UserProfile, AdminProfile, UserAuthentication],
-  logging: true,
+  //logging: true,
   synchronize: true,
 });

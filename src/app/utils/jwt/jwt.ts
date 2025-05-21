@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/explicit-module-boundary-types */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import jwt from "jsonwebtoken";
-import { IAuthData } from "../../interface/auth.interface";
+import { IAuthData } from "../../middlewares/auth/auth.interface";
 
 const verifyJwt = (token: string, secret: string) => {
   try {

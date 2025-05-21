@@ -69,3 +69,37 @@
 {"level":"info","message":"Example app listening on port 5000 & ip:192.168.10.18","service":"your-service-name","timestamp":"2025-05-21 13:24:48"}
 {"level":"info","message":"PostgreSql Connected","service":"your-service-name","timestamp":"2025-05-21 13:25:45"}
 {"level":"info","message":"Example app listening on port 5000 & ip:192.168.10.18","service":"your-service-name","timestamp":"2025-05-21 13:25:45"}
+{"level":"info","message":"PostgreSql Connected","service":"your-service-name","timestamp":"2025-05-21 13:26:40"}
+{"level":"info","message":"Example app listening on port 5000 & ip:192.168.10.18","service":"your-service-name","timestamp":"2025-05-21 13:26:40"}
+{"level":"info","message":"PostgreSql Connected","service":"your-service-name","timestamp":"2025-05-21 13:33:46"}
+{"level":"info","message":"Example app listening on port 5000 & ip:192.168.10.18","service":"your-service-name","timestamp":"2025-05-21 13:33:46"}
+{"level":"info","message":"PostgreSql Connected","service":"your-service-name","timestamp":"2025-05-21 13:35:01"}
+{"level":"info","message":"Example app listening on port 5000 & ip:192.168.10.18","service":"your-service-name","timestamp":"2025-05-21 13:35:01"}
+{"level":"info","message":"PostgreSql Connected","service":"your-service-name","timestamp":"2025-05-21 13:36:46"}
+{"level":"info","message":"PostgreSql Connected","service":"your-service-name","timestamp":"2025-05-21 13:36:47"}
+{"level":"info","message":"Example app listening on port 5000 & ip:192.168.10.18","service":"your-service-name","timestamp":"2025-05-21 13:36:47"}
+{"level":"info","message":"PostgreSql Connected","service":"your-service-name","timestamp":"2025-05-21 13:37:47"}
+{"level":"info","message":"Example app listening on port 5000 & ip:192.168.10.18","service":"your-service-name","timestamp":"2025-05-21 13:37:47"}
+{"level":"info","message":"PostgreSql Connected","service":"your-service-name","timestamp":"2025-05-21 13:37:52"}
+{"level":"info","message":"Example app listening on port 5000 & ip:192.168.10.18","service":"your-service-name","timestamp":"2025-05-21 13:37:53"}
+{"level":"info","message":"PostgreSql Connected","service":"your-service-name","timestamp":"2025-05-21 13:37:54"}
+{"level":"info","message":"Example app listening on port 5000 & ip:192.168.10.18","service":"your-service-name","timestamp":"2025-05-21 13:37:54"}
+{"level":"info","message":"PostgreSql Connected","service":"your-service-name","timestamp":"2025-05-21 13:38:03"}
+{"level":"info","message":"Example app listening on port 5000 & ip:192.168.10.18","service":"your-service-name","timestamp":"2025-05-21 13:38:03"}
+{"level":"info","message":"PostgreSql Connected","service":"your-service-name","timestamp":"2025-05-21 13:38:28"}
+{"level":"info","message":"Example app listening on port 5000 & ip:192.168.10.18","service":"your-service-name","timestamp":"2025-05-21 13:38:28"}
+{"level":"info","message":"PostgreSql Connected","service":"your-service-name","timestamp":"2025-05-21 13:39:46"}
+{"level":"info","message":"Example app listening on port 5000 & ip:192.168.10.18","service":"your-service-name","timestamp":"2025-05-21 13:39:46"}
+{"level":"info","message":"PostgreSql Connected","service":"your-service-name","timestamp":"2025-05-21 13:40:24"}
+{"level":"info","message":"Example app listening on port 5000 & ip:192.168.10.18","service":"your-service-name","timestamp":"2025-05-21 13:40:24"}
+{"level":"info","message":"PostgreSql Connected","service":"your-service-name","timestamp":"2025-05-21 13:40:46"}
+{"level":"info","message":"Example app listening on port 5000 & ip:192.168.10.18","service":"your-service-name","timestamp":"2025-05-21 13:40:47"}
+{"level":"info","message":"PostgreSql Connected","service":"your-service-name","timestamp":"2025-05-21 13:41:55"}
+{"level":"info","message":"Example app listening on port 5000 & ip:192.168.10.18","service":"your-service-name","timestamp":"2025-05-21 13:41:55"}
+{"code":"22P02","driverError":{"code":"22P02","file":"enum.c","length":102,"line":"133","name":"error","routine":"enum_in","severity":"ERROR"},"file":"enum.c","length":102,"level":"error","line":"133","message":"Error connecting to Postgres: invalid input value for enum users_role_enum: \"user\"","query":"ALTER TABLE \"users\" ALTER COLUMN \"role\" SET DEFAULT 'user'","routine":"enum_in","service":"your-service-name","severity":"ERROR","stack":"QueryFailedError: invalid input value for enum users_role_enum: \"user\"\n    at PostgresQueryRunner.query (C:\\Abir-007\\Practise\\basic-postgresql-nodejs-setup\\src\\driver\\postgres\\PostgresQueryRunner.ts:331:19)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at PostgresQueryRunner.executeQueries (C:\\Abir-007\\Practise\\basic-postgresql-nodejs-setup\\src\\query-runner\\BaseQueryRunner.ts:660:13)\n    at PostgresQueryRunner.changeColumn (C:\\Abir-007\\Practise\\basic-postgresql-nodejs-setup\\src\\driver\\postgres\\PostgresQueryRunner.ts:2288:9)\n    at PostgresQueryRunner.changeColumns (C:\\Abir-007\\Practise\\basic-postgresql-nodejs-setup\\src\\driver\\postgres\\PostgresQueryRunner.ts:2300:13)\n    at RdbmsSchemaBuilder.updateExistColumns (C:\\Abir-007\\Practise\\basic-postgresql-nodejs-setup\\src\\schema-builder\\RdbmsSchemaBuilder.ts:969:13)\n    at RdbmsSchemaBuilder.executeSchemaSyncOperationsInProperOrder (C:\\Abir-007\\Practise\\basic-postgresql-nodejs-setup\\src\\schema-builder\\RdbmsSchemaBuilder.ts:229:9)\n    at RdbmsSchemaBuilder.build (C:\\Abir-007\\Practise\\basic-postgresql-nodejs-setup\\src\\schema-builder\\RdbmsSchemaBuilder.ts:95:13)\n    at DataSource.synchronize (C:\\Abir-007\\Practise\\basic-postgresql-nodejs-setup\\src\\data-source\\DataSource.ts:339:9)\n    at DataSource.initialize (C:\\Abir-007\\Practise\\basic-postgresql-nodejs-setup\\src\\data-source\\DataSource.ts:277:43)","timestamp":"2025-05-21 13:43:53"}
+{"level":"info","message":"PostgreSql Connected","service":"your-service-name","timestamp":"2025-05-21 13:44:11"}
+{"level":"info","message":"Example app listening on port 5000 & ip:192.168.10.18","service":"your-service-name","timestamp":"2025-05-21 13:44:11"}
+{"level":"info","message":"PostgreSql Connected","service":"your-service-name","timestamp":"2025-05-21 13:46:25"}
+{"level":"info","message":"Example app listening on port 5000 & ip:192.168.10.18","service":"your-service-name","timestamp":"2025-05-21 13:46:25"}
+{"level":"info","message":"PostgreSql Connected","service":"your-service-name","timestamp":"2025-05-21 13:46:31"}
+{"level":"info","message":"Example app listening on port 5000 & ip:192.168.10.18","service":"your-service-name","timestamp":"2025-05-21 13:46:31"}

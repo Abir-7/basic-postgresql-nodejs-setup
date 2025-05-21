@@ -4,11 +4,11 @@ import { User } from "../modules/users/user/user.entity";
 import getHashedPassword from "../utils/helper/getHashedPassword";
 import { myDataSource } from "./database";
 
-async function seedAdmin() {
+export async function seedAdmin() {
   const adminData = {
     email: "admin@example.com",
     password: await getHashedPassword("admin123"),
-    role: userRoles.SUPER_ADMIN,
+    role: userRoles.SUPERADMIN,
     isVerified: true,
     needToResetPass: false,
   };

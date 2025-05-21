@@ -3,6 +3,7 @@
 import server from "./app";
 import { appConfig } from "./app/config";
 import { myDataSource } from "./app/db/database";
+import { seedAdmin } from "./app/db/seedAdmin";
 
 import logger from "./app/utils/logger";
 
@@ -20,7 +21,7 @@ process.on("unhandledRejection", (err) => {
 const main = async () => {
   await myDataSource.initialize();
   logger.info("PostgreSql Connected");
-
+  await seedAdmin();
   server.listen(
     Number(appConfig.server.port),
     appConfig.server.ip as string,

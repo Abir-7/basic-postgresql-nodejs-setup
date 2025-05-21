@@ -16,14 +16,14 @@ router.post(
 
 router.patch(
   "/update-profile-image",
-  auth("SUPER_ADMIN", "USER"),
+  auth("SUPERADMIN", "USER"),
   upload.single("file"),
   UserController.updateProfileImage
 );
 
 router.patch(
   "/update-profile-data",
-  auth("SUPER_ADMIN", "USER"),
+  auth("SUPERADMIN", "USER"),
   UserController.updateProfileData
 );
 

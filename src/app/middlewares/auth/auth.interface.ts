@@ -6,7 +6,7 @@ export interface IAuthData {
 }
 
 export const userRoles = {
-  SUPER_ADMIN: "SUPER_ADMIN",
+  SUPERADMIN: "SUPERADMIN",
   USER: "USER",
 } as const;
 

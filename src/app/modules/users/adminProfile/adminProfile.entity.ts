@@ -46,6 +46,5 @@ export class AdminProfile {
   image?: string;
 
   @OneToOne(() => User, (user) => user.adminProfile)
-  @JoinColumn({ name: "userId" }) // foreign key column
   user!: User;
 }

@@ -9,6 +9,7 @@ router.get("/get-access-token", AuthController.getNewAccessToken);
 router.post("/login", AuthController.userLogin);
 
 router.patch("/verify-user", AuthController.verifyUser);
+router.patch("/resend-code", AuthController.resendCode);
 router.patch("/forgot-password-request", AuthController.forgotPasswordRequest);
 router.patch("/reset-password", AuthController.resetPassword);
 router.patch("/update-password", auth("USER"), AuthController.updatePassword);

@@ -23,7 +23,7 @@ const userLogin = catchAsync(async (req, res, next) => {
 
 const verifyUser = catchAsync(async (req, res, next) => {
   const { email, otp } = req.body;
-  const result = await AuthService.verifyUser(email, Number(otp));
+  const result = await AuthService.verifyUser(email, otp);
 
   sendResponse(res, {
     success: true,
@@ -36,6 +36,17 @@ const verifyUser = catchAsync(async (req, res, next) => {
 const forgotPasswordRequest = catchAsync(async (req, res, next) => {
   const { email } = req.body;
   const result = await AuthService.forgotPasswordRequest(email);
+
+  sendResponse(res, {
+    success: true,
+    statusCode: status.OK,
+    message: "A verification code is sent to your email.",
+    data: result,
+  });
+});
+const resendCode = catchAsync(async (req, res, next) => {
+  const { email } = req.body;
+  const result = await AuthService.resendCode(email);
 
   sendResponse(res, {
     success: true,
@@ -86,6 +97,7 @@ export const AuthController = {
   verifyUser,
   forgotPasswordRequest,
   resetPassword,
+  resendCode,
   userLogin,
   getNewAccessToken,
   updatePassword,

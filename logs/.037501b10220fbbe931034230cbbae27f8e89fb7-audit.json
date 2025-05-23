@@ -1,0 +1,20 @@
+{
+    "keep": {
+        "days": true,
+        "amount": 30
+    },
+    "auditLog": "F:\\postgress typeorm\\basic-postgresql-nodejs-setup\\logs\\.037501b10220fbbe931034230cbbae27f8e89fb7-audit.json",
+    "files": [
+        {
+            "date": 1747922150742,
+            "name": "F:\\postgress typeorm\\basic-postgresql-nodejs-setup\\logs\\2025-05-22-exceptions.log",
+            "hash": "a6c1ce3a3d3b32df1cd0d7007b028662ef226c9a7c2ce47d953ea2a369097a32"
+        },
+        {
+            "date": 1747936805193,
+            "name": "F:\\postgress typeorm\\basic-postgresql-nodejs-setup\\logs\\2025-05-23-exceptions.log",
+            "hash": "5da59eb4dd36c68fbb84b4e6f7c4471bf8bc4a96bd0b4d076881b36993a8fd6c"
+        }
+    ],
+    "hashType": "sha256"
+}

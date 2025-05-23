@@ -33,9 +33,6 @@ export class AdminProfile {
   @Column({ type: "date", nullable: true })
   dateOfBirth?: Date;
 
-  @Column({ type: "varchar" })
-  email!: string;
-
   @Column({ type: "varchar", nullable: true })
   phone?: string;
 
@@ -44,7 +41,4 @@ export class AdminProfile {
 
   @Column({ type: "varchar", nullable: true })
   image?: string;
-
-  @OneToOne(() => User, (user) => user.adminProfile)
-  user!: User;
 }

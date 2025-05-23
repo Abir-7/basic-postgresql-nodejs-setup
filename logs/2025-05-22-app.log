@@ -1,0 +1,158 @@
+{"code":"28P01","file":"auth.c","length":104,"level":"error","line":"324","message":"Error connecting to Postgres: password authentication failed for user \"postgres\"","name":"error","routine":"auth_failed","service":"your-service-name","severity":"FATAL","stack":"error: password authentication failed for user \"postgres\"\n    at Parser.parseErrorMessage (F:\\postgress typeorm\\basic-postgresql-nodejs-setup\\node_modules\\pg-protocol\\src\\parser.ts:368:69)\n    at Parser.handlePacket (F:\\postgress typeorm\\basic-postgresql-nodejs-setup\\node_modules\\pg-protocol\\src\\parser.ts:187:21)\n    at Parser.parse (F:\\postgress typeorm\\basic-postgresql-nodejs-setup\\node_modules\\pg-protocol\\src\\parser.ts:102:30)\n    at Socket.<anonymous> (F:\\postgress typeorm\\basic-postgresql-nodejs-setup\\node_modules\\pg-protocol\\src\\index.ts:7:48)\n    at Socket.emit (node:events:524:28)\n    at addChunk (node:internal/streams/readable:561:12)\n    at readableAddChunkPushByteMode (node:internal/streams/readable:512:3)\n    at Socket.Readable.push (node:internal/streams/readable:392:5)\n    at TCP.onStreamRead (node:internal/stream_base_commons:189:23)","timestamp":"2025-05-22 19:55:50"}
+{"code":"28P01","file":"auth.c","length":104,"level":"error","line":"324","message":"Error connecting to Postgres: password authentication failed for user \"postgres\"","name":"error","routine":"auth_failed","service":"your-service-name","severity":"FATAL","stack":"error: password authentication failed for user \"postgres\"\n    at Parser.parseErrorMessage (F:\\postgress typeorm\\basic-postgresql-nodejs-setup\\node_modules\\pg-protocol\\src\\parser.ts:368:69)\n    at Parser.handlePacket (F:\\postgress typeorm\\basic-postgresql-nodejs-setup\\node_modules\\pg-protocol\\src\\parser.ts:187:21)\n    at Parser.parse (F:\\postgress typeorm\\basic-postgresql-nodejs-setup\\node_modules\\pg-protocol\\src\\parser.ts:102:30)\n    at Socket.<anonymous> (F:\\postgress typeorm\\basic-postgresql-nodejs-setup\\node_modules\\pg-protocol\\src\\index.ts:7:48)\n    at Socket.emit (node:events:524:28)\n    at addChunk (node:internal/streams/readable:561:12)\n    at readableAddChunkPushByteMode (node:internal/streams/readable:512:3)\n    at Socket.Readable.push (node:internal/streams/readable:392:5)\n    at TCP.onStreamRead (node:internal/stream_base_commons:189:23)","timestamp":"2025-05-22 19:56:22"}
+{"level":"info","message":"PostgreSql Connected","service":"your-service-name","timestamp":"2025-05-22 19:56:27"}
+{"code":"ERR_SOCKET_BAD_PORT","level":"error","message":"Error connecting to Postgres: options.port should be >= 0 and < 65536. Received type number (NaN).","service":"your-service-name","stack":"RangeError: options.port should be >= 0 and < 65536. Received type number (NaN).\n    at Server.listen (node:net:2088:5)\n    at F:\\postgress typeorm\\basic-postgresql-nodejs-setup\\src\\server.ts:25:10\n    at step (F:\\postgress typeorm\\basic-postgresql-nodejs-setup\\src\\server.ts:34:23)\n    at Object.next (F:\\postgress typeorm\\basic-postgresql-nodejs-setup\\src\\server.ts:15:53)\n    at fulfilled (F:\\postgress typeorm\\basic-postgresql-nodejs-setup\\src\\server.ts:6:58)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)","timestamp":"2025-05-22 19:56:27"}
+{"level":"info","message":"PostgreSql Connected","service":"your-service-name","timestamp":"2025-05-22 20:02:53"}
+{"level":"info","message":"Example app listening on port 5000 & ip:192.168.50.161","service":"your-service-name","timestamp":"2025-05-22 20:02:53"}
+{"level":"info","message":"PostgreSql Connected","service":"your-service-name","timestamp":"2025-05-22 20:03:15"}
+{"level":"info","message":"Example app listening on port 5000 & ip:192.168.50.161","service":"your-service-name","timestamp":"2025-05-22 20:03:16"}
+{"level":"error","message":"Driver not Connected","service":"your-service-name","timestamp":"2025-05-22 20:11:17"}
+{"level":"info","message":"PostgreSql Connected","service":"your-service-name","timestamp":"2025-05-22 20:12:15"}
+{"level":"info","message":"Example app listening on port 5000 & ip:192.168.50.161","service":"your-service-name","timestamp":"2025-05-22 20:12:15"}
+{"level":"error","message":"Driver not Connected","service":"your-service-name","timestamp":"2025-05-22 20:12:20"}
+{"level":"error","message":"Driver not Connected","service":"your-service-name","timestamp":"2025-05-22 20:12:21"}
+{"level":"info","message":"PostgreSql Connected","service":"your-service-name","timestamp":"2025-05-22 20:12:26"}
+{"level":"info","message":"Example app listening on port 5000 & ip:192.168.50.161","service":"your-service-name","timestamp":"2025-05-22 20:12:26"}
+{"level":"error","message":"Driver not Connected","service":"your-service-name","timestamp":"2025-05-22 20:12:36"}
+{"level":"error","message":"Driver not Connected","service":"your-service-name","timestamp":"2025-05-22 20:12:37"}
+{"level":"error","message":"Driver not Connected","service":"your-service-name","timestamp":"2025-05-22 20:13:23"}
+{"level":"error","message":"Driver not Connected","service":"your-service-name","timestamp":"2025-05-22 20:13:24"}
+{"level":"error","message":"Driver not Connected","service":"your-service-name","timestamp":"2025-05-22 20:13:25"}
+{"level":"info","message":"PostgreSql Connected","service":"your-service-name","timestamp":"2025-05-22 20:13:49"}
+{"level":"info","message":"Example app listening on port 5000 & ip:192.168.50.161","service":"your-service-name","timestamp":"2025-05-22 20:13:50"}
+{"level":"info","message":"PostgreSql Connected","service":"your-service-name","timestamp":"2025-05-22 20:15:34"}
+{"level":"info","message":"Example app listening on port 5000 & ip:192.168.50.161","service":"your-service-name","timestamp":"2025-05-22 20:15:34"}
+{"level":"info","message":"PostgreSql Connected","service":"your-service-name","timestamp":"2025-05-22 20:21:59"}
+{"level":"info","message":"Example app listening on port 5000 & ip:192.168.50.161","service":"your-service-name","timestamp":"2025-05-22 20:21:59"}
+{"level":"info","message":"PostgreSql Connected","service":"your-service-name","timestamp":"2025-05-22 20:26:30"}
+{"level":"info","message":"Example app listening on port 5000 & ip:192.168.50.161","service":"your-service-name","timestamp":"2025-05-22 20:26:30"}
+{"level":"info","message":"PostgreSql Connected","service":"your-service-name","timestamp":"2025-05-22 20:26:34"}
+{"level":"info","message":"Example app listening on port 5000 & ip:192.168.50.161","service":"your-service-name","timestamp":"2025-05-22 20:26:35"}
+{"level":"info","message":"PostgreSql Connected","service":"your-service-name","timestamp":"2025-05-22 20:27:19"}
+{"level":"info","message":"Example app listening on port 5000 & ip:192.168.50.161","service":"your-service-name","timestamp":"2025-05-22 20:27:20"}
+{"level":"info","message":"PostgreSql Connected","service":"your-service-name","timestamp":"2025-05-22 20:27:41"}
+{"level":"info","message":"Example app listening on port 5000 & ip:192.168.50.161","service":"your-service-name","timestamp":"2025-05-22 20:27:41"}
+{"level":"info","message":"PostgreSql Connected","service":"your-service-name","timestamp":"2025-05-22 20:27:43"}
+{"level":"info","message":"Example app listening on port 5000 & ip:192.168.50.161","service":"your-service-name","timestamp":"2025-05-22 20:27:43"}
+{"level":"info","message":"PostgreSql Connected","service":"your-service-name","timestamp":"2025-05-22 20:51:13"}
+{"level":"info","message":"Example app listening on port 5000 & ip:192.168.50.161","service":"your-service-name","timestamp":"2025-05-22 20:51:13"}
+{"level":"info","message":"PostgreSql Connected","service":"your-service-name","timestamp":"2025-05-22 20:51:29"}
+{"level":"info","message":"Example app listening on port 5000 & ip:192.168.50.161","service":"your-service-name","timestamp":"2025-05-22 20:51:30"}
+{"level":"info","message":"PostgreSql Connected","service":"your-service-name","timestamp":"2025-05-22 20:51:37"}
+{"level":"info","message":"Example app listening on port 5000 & ip:192.168.50.161","service":"your-service-name","timestamp":"2025-05-22 20:51:37"}
+{"level":"info","message":"PostgreSql Connected","service":"your-service-name","timestamp":"2025-05-22 20:51:47"}
+{"level":"info","message":"Example app listening on port 5000 & ip:192.168.50.161","service":"your-service-name","timestamp":"2025-05-22 20:51:47"}
+{"level":"info","message":"PostgreSql Connected","service":"your-service-name","timestamp":"2025-05-22 20:56:34"}
+{"level":"info","message":"Example app listening on port 5000 & ip:192.168.50.161","service":"your-service-name","timestamp":"2025-05-22 20:56:34"}
+{"level":"info","message":"PostgreSql Connected","service":"your-service-name","timestamp":"2025-05-22 20:56:38"}
+{"level":"info","message":"Example app listening on port 5000 & ip:192.168.50.161","service":"your-service-name","timestamp":"2025-05-22 20:56:39"}
+{"level":"info","message":"PostgreSql Connected","service":"your-service-name","timestamp":"2025-05-22 20:56:43"}
+{"level":"info","message":"Example app listening on port 5000 & ip:192.168.50.161","service":"your-service-name","timestamp":"2025-05-22 20:56:43"}
+{"level":"info","message":"PostgreSql Connected","service":"your-service-name","timestamp":"2025-05-22 20:57:02"}
+{"level":"info","message":"Example app listening on port 5000 & ip:192.168.50.161","service":"your-service-name","timestamp":"2025-05-22 20:57:03"}
+{"level":"info","message":"PostgreSql Connected","service":"your-service-name","timestamp":"2025-05-22 20:57:04"}
+{"level":"info","message":"Example app listening on port 5000 & ip:192.168.50.161","service":"your-service-name","timestamp":"2025-05-22 20:57:04"}
+{"level":"info","message":"PostgreSql Connected","service":"your-service-name","timestamp":"2025-05-22 20:57:10"}
+{"level":"info","message":"Example app listening on port 5000 & ip:192.168.50.161","service":"your-service-name","timestamp":"2025-05-22 20:57:10"}
+{"level":"info","message":"PostgreSql Connected","service":"your-service-name","timestamp":"2025-05-22 20:57:40"}
+{"level":"info","message":"Example app listening on port 5000 & ip:192.168.50.161","service":"your-service-name","timestamp":"2025-05-22 20:57:41"}
+{"level":"info","message":"PostgreSql Connected","service":"your-service-name","timestamp":"2025-05-22 21:01:27"}
+{"level":"info","message":"Example app listening on port 5000 & ip:192.168.50.161","service":"your-service-name","timestamp":"2025-05-22 21:01:27"}
+{"level":"info","message":"PostgreSql Connected","service":"your-service-name","timestamp":"2025-05-22 21:08:47"}
+{"level":"info","message":"Example app listening on port 5000 & ip:192.168.50.161","service":"your-service-name","timestamp":"2025-05-22 21:08:47"}
+{"level":"info","message":"PostgreSql Connected","service":"your-service-name","timestamp":"2025-05-22 21:11:19"}
+{"level":"info","message":"Example app listening on port 5000 & ip:192.168.50.161","service":"your-service-name","timestamp":"2025-05-22 21:11:19"}
+{"level":"info","message":"PostgreSql Connected","service":"your-service-name","timestamp":"2025-05-22 21:15:09"}
+{"level":"info","message":"Example app listening on port 5000 & ip:192.168.50.161","service":"your-service-name","timestamp":"2025-05-22 21:15:09"}
+{"level":"info","message":"PostgreSql Connected","service":"your-service-name","timestamp":"2025-05-22 21:16:16"}
+{"level":"info","message":"Example app listening on port 5000 & ip:192.168.50.161","service":"your-service-name","timestamp":"2025-05-22 21:16:16"}
+{"level":"info","message":"PostgreSql Connected","service":"your-service-name","timestamp":"2025-05-22 21:21:25"}
+{"level":"info","message":"Example app listening on port 5000 & ip:192.168.50.161","service":"your-service-name","timestamp":"2025-05-22 21:21:25"}
+{"level":"info","message":"PostgreSql Connected","service":"your-service-name","timestamp":"2025-05-22 21:21:36"}
+{"level":"info","message":"Example app listening on port 5000 & ip:192.168.50.161","service":"your-service-name","timestamp":"2025-05-22 21:21:36"}
+{"level":"info","message":"PostgreSql Connected","service":"your-service-name","timestamp":"2025-05-22 21:21:58"}
+{"level":"info","message":"Example app listening on port 5000 & ip:192.168.50.161","service":"your-service-name","timestamp":"2025-05-22 21:21:58"}
+{"level":"info","message":"PostgreSql Connected","service":"your-service-name","timestamp":"2025-05-22 21:22:54"}
+{"level":"info","message":"Example app listening on port 5000 & ip:192.168.50.161","service":"your-service-name","timestamp":"2025-05-22 21:22:55"}
+{"level":"info","message":"PostgreSql Connected","service":"your-service-name","timestamp":"2025-05-22 22:30:10"}
+{"level":"info","message":"Example app listening on port 5000 & ip:192.168.50.161","service":"your-service-name","timestamp":"2025-05-22 22:30:10"}
+{"level":"info","message":"PostgreSql Connected","service":"your-service-name","timestamp":"2025-05-22 22:30:22"}
+{"level":"info","message":"Example app listening on port 5000 & ip:192.168.50.161","service":"your-service-name","timestamp":"2025-05-22 22:30:23"}
+{"level":"info","message":"PostgreSql Connected","service":"your-service-name","timestamp":"2025-05-22 22:30:41"}
+{"level":"info","message":"Example app listening on port 5000 & ip:192.168.50.161","service":"your-service-name","timestamp":"2025-05-22 22:30:41"}
+{"level":"info","message":"PostgreSql Connected","service":"your-service-name","timestamp":"2025-05-22 22:30:49"}
+{"level":"info","message":"Example app listening on port 5000 & ip:192.168.50.161","service":"your-service-name","timestamp":"2025-05-22 22:30:49"}
+{"level":"info","message":"PostgreSql Connected","service":"your-service-name","timestamp":"2025-05-22 22:31:10"}
+{"level":"info","message":"Example app listening on port 5000 & ip:192.168.50.161","service":"your-service-name","timestamp":"2025-05-22 22:31:11"}
+{"level":"info","message":"PostgreSql Connected","service":"your-service-name","timestamp":"2025-05-22 22:31:32"}
+{"level":"info","message":"Example app listening on port 5000 & ip:192.168.50.161","service":"your-service-name","timestamp":"2025-05-22 22:31:32"}
+{"level":"info","message":"PostgreSql Connected","service":"your-service-name","timestamp":"2025-05-22 22:32:11"}
+{"level":"info","message":"Example app listening on port 5000 & ip:192.168.50.161","service":"your-service-name","timestamp":"2025-05-22 22:32:11"}
+{"level":"info","message":"PostgreSql Connected","service":"your-service-name","timestamp":"2025-05-22 22:35:21"}
+{"level":"info","message":"Example app listening on port 5000 & ip:192.168.50.161","service":"your-service-name","timestamp":"2025-05-22 22:35:21"}
+{"level":"info","message":"PostgreSql Connected","service":"your-service-name","timestamp":"2025-05-22 22:41:17"}
+{"level":"info","message":"Example app listening on port 5000 & ip:192.168.50.161","service":"your-service-name","timestamp":"2025-05-22 22:41:17"}
+{"level":"info","message":"PostgreSql Connected","service":"your-service-name","timestamp":"2025-05-22 22:41:54"}
+{"level":"info","message":"Example app listening on port 5000 & ip:192.168.50.161","service":"your-service-name","timestamp":"2025-05-22 22:41:54"}
+{"level":"info","message":"PostgreSql Connected","service":"your-service-name","timestamp":"2025-05-22 22:42:10"}
+{"level":"info","message":"Example app listening on port 5000 & ip:192.168.50.161","service":"your-service-name","timestamp":"2025-05-22 22:42:10"}
+{"level":"info","message":"PostgreSql Connected","service":"your-service-name","timestamp":"2025-05-22 22:42:25"}
+{"level":"info","message":"Example app listening on port 5000 & ip:192.168.50.161","service":"your-service-name","timestamp":"2025-05-22 22:42:25"}
+{"level":"info","message":"PostgreSql Connected","service":"your-service-name","timestamp":"2025-05-22 22:44:17"}
+{"level":"info","message":"Example app listening on port 5000 & ip:192.168.50.161","service":"your-service-name","timestamp":"2025-05-22 22:44:17"}
+{"level":"info","message":"PostgreSql Connected","service":"your-service-name","timestamp":"2025-05-22 22:44:20"}
+{"level":"info","message":"Example app listening on port 5000 & ip:192.168.50.161","service":"your-service-name","timestamp":"2025-05-22 22:44:20"}
+{"level":"error","message":"duplicate key value violates unique constraint \"UQ_97672ac88f789774dd47f7c8be3\"","service":"your-service-name","timestamp":"2025-05-22 22:46:15"}
+{"level":"info","message":"PostgreSql Connected","service":"your-service-name","timestamp":"2025-05-22 22:47:07"}
+{"level":"info","message":"Example app listening on port 5000 & ip:192.168.50.161","service":"your-service-name","timestamp":"2025-05-22 22:47:08"}
+{"level":"info","message":"PostgreSql Connected","service":"your-service-name","timestamp":"2025-05-22 22:47:21"}
+{"level":"info","message":"Example app listening on port 5000 & ip:192.168.50.161","service":"your-service-name","timestamp":"2025-05-22 22:47:21"}
+{"level":"info","message":"PostgreSql Connected","service":"your-service-name","timestamp":"2025-05-22 22:47:26"}
+{"level":"info","message":"Example app listening on port 5000 & ip:192.168.50.161","service":"your-service-name","timestamp":"2025-05-22 22:47:27"}
+{"level":"info","message":"PostgreSql Connected","service":"your-service-name","timestamp":"2025-05-22 22:53:57"}
+{"level":"info","message":"Example app listening on port 5000 & ip:192.168.50.161","service":"your-service-name","timestamp":"2025-05-22 22:53:58"}
+{"level":"info","message":"PostgreSql Connected","service":"your-service-name","timestamp":"2025-05-22 22:54:29"}
+{"level":"info","message":"Example app listening on port 5000 & ip:192.168.50.161","service":"your-service-name","timestamp":"2025-05-22 22:54:29"}
+{"level":"info","message":"PostgreSql Connected","service":"your-service-name","timestamp":"2025-05-22 22:54:52"}
+{"level":"info","message":"Example app listening on port 5000 & ip:192.168.50.161","service":"your-service-name","timestamp":"2025-05-22 22:54:52"}
+{"level":"info","message":"PostgreSql Connected","service":"your-service-name","timestamp":"2025-05-22 22:55:18"}
+{"level":"info","message":"Example app listening on port 5000 & ip:192.168.50.161","service":"your-service-name","timestamp":"2025-05-22 22:55:18"}
+{"level":"info","message":"PostgreSql Connected","service":"your-service-name","timestamp":"2025-05-22 23:22:32"}
+{"level":"info","message":"Example app listening on port 5000 & ip:192.168.50.161","service":"your-service-name","timestamp":"2025-05-22 23:22:32"}
+{"level":"info","message":"PostgreSql Connected","service":"your-service-name","timestamp":"2025-05-22 23:29:11"}
+{"level":"info","message":"Example app listening on port 5000 & ip:192.168.50.161","service":"your-service-name","timestamp":"2025-05-22 23:29:11"}
+{"level":"info","message":"PostgreSql Connected","service":"your-service-name","timestamp":"2025-05-22 23:29:54"}
+{"level":"info","message":"Example app listening on port 5000 & ip:192.168.50.161","service":"your-service-name","timestamp":"2025-05-22 23:29:54"}
+{"level":"info","message":"PostgreSql Connected","service":"your-service-name","timestamp":"2025-05-22 23:33:28"}
+{"level":"info","message":"Example app listening on port 5000 & ip:192.168.50.161","service":"your-service-name","timestamp":"2025-05-22 23:33:28"}
+{"level":"info","message":"PostgreSql Connected","service":"your-service-name","timestamp":"2025-05-22 23:34:29"}
+{"level":"info","message":"Example app listening on port 5000 & ip:192.168.50.161","service":"your-service-name","timestamp":"2025-05-22 23:34:29"}
+{"level":"info","message":"PostgreSql Connected","service":"your-service-name","timestamp":"2025-05-22 23:35:10"}
+{"level":"info","message":"Example app listening on port 5000 & ip:192.168.50.161","service":"your-service-name","timestamp":"2025-05-22 23:35:10"}
+{"level":"info","message":"PostgreSql Connected","service":"your-service-name","timestamp":"2025-05-22 23:35:41"}
+{"level":"info","message":"Example app listening on port 5000 & ip:192.168.50.161","service":"your-service-name","timestamp":"2025-05-22 23:35:41"}
+{"level":"info","message":"PostgreSql Connected","service":"your-service-name","timestamp":"2025-05-22 23:36:53"}
+{"level":"info","message":"Example app listening on port 5000 & ip:192.168.50.161","service":"your-service-name","timestamp":"2025-05-22 23:36:54"}
+{"level":"info","message":"PostgreSql Connected","service":"your-service-name","timestamp":"2025-05-22 23:37:02"}
+{"level":"info","message":"Example app listening on port 5000 & ip:192.168.50.161","service":"your-service-name","timestamp":"2025-05-22 23:37:02"}
+{"level":"info","message":"PostgreSql Connected","service":"your-service-name","timestamp":"2025-05-22 23:37:07"}
+{"level":"info","message":"Example app listening on port 5000 & ip:192.168.50.161","service":"your-service-name","timestamp":"2025-05-22 23:37:07"}
+{"level":"info","message":"PostgreSql Connected","service":"your-service-name","timestamp":"2025-05-22 23:37:41"}
+{"level":"info","message":"Example app listening on port 5000 & ip:192.168.50.161","service":"your-service-name","timestamp":"2025-05-22 23:37:41"}
+{"level":"info","message":"PostgreSql Connected","service":"your-service-name","timestamp":"2025-05-22 23:40:04"}
+{"level":"info","message":"Example app listening on port 5000 & ip:192.168.50.161","service":"your-service-name","timestamp":"2025-05-22 23:40:04"}
+{"level":"error","message":"Property \"UserProfile\" was not found in \"User\". Make sure your query is correct.","service":"your-service-name","timestamp":"2025-05-22 23:52:36"}
+{"level":"info","message":"PostgreSql Connected","service":"your-service-name","timestamp":"2025-05-22 23:52:57"}
+{"level":"info","message":"Example app listening on port 5000 & ip:192.168.50.161","service":"your-service-name","timestamp":"2025-05-22 23:52:57"}
+{"level":"info","message":"PostgreSql Connected","service":"your-service-name","timestamp":"2025-05-22 23:52:58"}
+{"level":"info","message":"Example app listening on port 5000 & ip:192.168.50.161","service":"your-service-name","timestamp":"2025-05-22 23:52:58"}
+{"level":"info","message":"PostgreSql Connected","service":"your-service-name","timestamp":"2025-05-22 23:52:59"}
+{"level":"info","message":"PostgreSql Connected","service":"your-service-name","timestamp":"2025-05-22 23:53:00"}
+{"level":"info","message":"Example app listening on port 5000 & ip:192.168.50.161","service":"your-service-name","timestamp":"2025-05-22 23:53:00"}
+{"level":"info","message":"PostgreSql Connected","service":"your-service-name","timestamp":"2025-05-22 23:56:25"}
+{"level":"info","message":"Example app listening on port 5000 & ip:192.168.50.161","service":"your-service-name","timestamp":"2025-05-22 23:56:25"}
+{"level":"info","message":"PostgreSql Connected","service":"your-service-name","timestamp":"2025-05-22 23:56:39"}
+{"level":"info","message":"Example app listening on port 5000 & ip:192.168.50.161","service":"your-service-name","timestamp":"2025-05-22 23:56:39"}
+{"level":"error","message":"Property \"UserProfile\" was not found in \"User\". Make sure your query is correct.","service":"your-service-name","timestamp":"2025-05-22 23:56:42"}
+{"level":"info","message":"PostgreSql Connected","service":"your-service-name","timestamp":"2025-05-22 23:57:11"}
+{"level":"info","message":"Example app listening on port 5000 & ip:192.168.50.161","service":"your-service-name","timestamp":"2025-05-22 23:57:11"}

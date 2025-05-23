@@ -33,10 +33,7 @@ const updateProfileImage = catchAsync(async (req, res) => {
 const updateProfileData = catchAsync(async (req, res) => {
   const userData = req.body;
 
-  const result = await UserService.updateProfileData(
-    userData,
-    req.user.userEmail
-  );
+  const result = await UserService.updateProfileData(userData, req.user.userId);
   sendResponse(res, {
     success: true,
     statusCode: status.OK,

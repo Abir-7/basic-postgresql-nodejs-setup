@@ -9,7 +9,8 @@ export const myDataSource = new DataSource({
   host: "localhost",
   port: 5432,
   username: "postgres",
-  password: "postgres",
+  password: "017016",
+  //password: "postgres", office
   database: "testdb",
   entities: [User, UserProfile, AdminProfile, UserAuthentication],
   //logging: true,

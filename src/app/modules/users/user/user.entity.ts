@@ -42,26 +42,26 @@ export class User {
   @UpdateDateColumn({ type: "timestamp" })
   updatedAt!: Date;
 
-  // Relations
-
-  @OneToOne(() => UserAuthentication, (authentication) => authentication.user, {
+  @OneToOne(() => UserAuthentication, (authentication) => authentication, {
     cascade: true,
-    eager: true, // load automatically with User; optional
+    eager: true,
   })
-  @JoinColumn() // owns the relation (FK stored here)
+  @JoinColumn()
   authentication!: UserAuthentication;
 
-  @OneToOne(() => AdminProfile, (adminProfile) => adminProfile.user, {
+  @OneToOne(() => AdminProfile, (adminProfile) => adminProfile, {
     cascade: true,
     eager: true,
+    nullable: true,
   })
   @JoinColumn()
-  adminProfile?: AdminProfile; // optional since only admins have this
+  adminProfile?: AdminProfile;
 
-  @OneToOne(() => UserProfile, (userProfile) => userProfile.user, {
+  @OneToOne(() => UserProfile, (userProfile) => userProfile, {
     cascade: true,
     eager: true,
+    nullable: true,
   })
   @JoinColumn()
-  userProfile?: UserProfile; // optional since only users have this
+  userProfile?: UserProfile;
 }

@@ -1,6 +1,9 @@
 import { myDataSource } from "../../../db/database";
+import getExpiryTime from "../../../utils/helper/getExpiryTime";
 import getHashedPassword from "../../../utils/helper/getHashedPassword";
+import getOtp from "../../../utils/helper/getOtp";
 import { AdminProfile } from "../adminProfile/adminProfile.entity";
+import { UserAuthentication } from "../userAuthentication/user_authentication.entity";
 import { UserProfile } from "../userProfile/userProfile.entity";
 import { User } from "./user.entity";
 
@@ -11,32 +14,30 @@ const createUser = async (data: {
 }) => {
   const result = await myDataSource.manager.transaction(
     async (transactionalEntityManager) => {
-      const hashedPassword = await getHashedPassword(data.password);
-      const user = transactionalEntityManager.create("User", {
-        email: data.email,
-        password: hashedPassword,
-      });
-
-      const savedUser = (await transactionalEntityManager.save(
-        "User",
-        user
-      )) as User;
-
-      const userProfile = transactionalEntityManager.create("UserProfile", {
+      const userProfile = transactionalEntityManager.create(UserProfile, {
         fullName: data.fullName,
         email: data.email,
-        userId: savedUser?.id,
+      }); //if cascade true in user , no need to call save..
+
+      const userAuth = transactionalEntityManager.create(UserAuthentication, {
+        expDate: getExpiryTime(5),
+        otp: getOtp(5).toString(),
+        token: null,
+      }); //if cascade true in user , no need to call save..
+
+      const hashedPassword = await getHashedPassword(data.password);
+      const user = transactionalEntityManager.create(User, {
+        email: data.email,
+        password: hashedPassword,
+        userProfile: userProfile,
+        authentication: userAuth,
       });
 
-      const savedProfile = await transactionalEntityManager.save(
-        "UserProfile",
-        userProfile
-      );
+      // 5. Save user (cascades to save userProfile and authentication)
 
-      return {
-        user: savedUser,
-        userProfile: savedProfile,
-      };
+      const savedUser = await transactionalEntityManager.save(User, user);
+
+      return { ...savedUser, password: "" };
     }
   );
 

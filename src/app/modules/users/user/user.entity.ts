@@ -8,7 +8,7 @@ import {
   JoinColumn,
 } from "typeorm";
 import { UserAuthentication } from "../userAuthentication/user_authentication.entity";
-import { AdminProfile } from "../adminProfile/adminProfile.entity";
+
 import { UserProfile } from "../userProfile/userProfile.entity";
 import {
   TUserRole,
@@ -36,6 +36,12 @@ export class User {
   @Column({ type: "boolean", default: false })
   needToResetPass!: boolean;
 
+  @Column({ type: "boolean", default: false })
+  isDeleted!: boolean;
+
+  @Column({ type: "boolean", default: false })
+  isBlocked!: boolean;
+
   @CreateDateColumn({ type: "timestamp" })
   createdAt!: Date;
 
@@ -48,14 +54,6 @@ export class User {
   })
   @JoinColumn()
   authentication!: UserAuthentication;
-
-  @OneToOne(() => AdminProfile, (adminProfile) => adminProfile, {
-    cascade: true,
-    eager: true,
-    nullable: true,
-  })
-  @JoinColumn()
-  adminProfile?: AdminProfile;
 
   @OneToOne(() => UserProfile, (userProfile) => userProfile, {
     cascade: true,

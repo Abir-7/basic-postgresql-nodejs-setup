@@ -1,4 +1,5 @@
-import { Entity, PrimaryGeneratedColumn, Column } from "typeorm";
+import { Entity, PrimaryGeneratedColumn, Column, OneToOne } from "typeorm";
+import { User } from "../user/user.entity";
 
 @Entity({ name: "user_authentication" })
 export class UserAuthentication {
@@ -13,4 +14,7 @@ export class UserAuthentication {
 
   @Column({ type: "varchar", nullable: true, default: null })
   token!: string | null;
+
+  @OneToOne(() => User, (user) => user.authentication)
+  user!: User;
 }

@@ -33,7 +33,7 @@ export const auth =
 
     const userData = await userRepo.findOne({
       where: { id: decodedData.userId },
-      relations: ["adminProfile", "authentication", "userProfile"],
+      relations: ["authentication", "userProfile"],
     });
 
     if (!userData) {

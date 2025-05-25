@@ -1,7 +1,7 @@
 import { DataSource } from "typeorm";
 import { User } from "../modules/users/user/user.entity";
 import { UserProfile } from "../modules/users/userProfile/userProfile.entity";
-import { AdminProfile } from "../modules/users/adminProfile/adminProfile.entity";
+
 import { UserAuthentication } from "../modules/users/userAuthentication/user_authentication.entity";
 
 export const myDataSource = new DataSource({
@@ -12,7 +12,7 @@ export const myDataSource = new DataSource({
   password: "017016",
   //password: "postgres", office
   database: "testdb",
-  entities: [User, UserProfile, AdminProfile, UserAuthentication],
+  entities: [User, UserProfile, UserAuthentication],
   //logging: true,
   synchronize: true,
 });

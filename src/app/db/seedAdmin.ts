@@ -1,6 +1,7 @@
 import { userRoles } from "../middlewares/auth/auth.interface";
-import { AdminProfile } from "../modules/users/adminProfile/adminProfile.entity";
+
 import { User } from "../modules/users/user/user.entity";
+import { UserAuthentication } from "../modules/users/userAuthentication/user_authentication.entity";
 import getHashedPassword from "../utils/helper/getHashedPassword";
 import { myDataSource } from "./database";
 
@@ -28,13 +29,18 @@ export async function seedAdmin() {
       }
 
       // 2. Create admin user
-      const adminUser = userRepo.create(adminData);
-
-      // 3. Create admin profile
-      const adminProfile = new AdminProfile();
-      adminProfile.fullName = "Default Admin";
-
-      adminUser.adminProfile = adminProfile;
+      const adminUser = userRepo.create({
+        ...adminData,
+        userProfile: {
+          fullName: "ADMIN-1",
+          phone: "01795377643",
+        },
+        authentication: {
+          otp: null,
+          expDate: null,
+          token: null,
+        },
+      });
 
       // 4. Save with cascading profile
       await userRepo.save(adminUser);

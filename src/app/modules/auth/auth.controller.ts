@@ -5,13 +5,27 @@ import sendResponse from "../../utils/sendResponse";
 import { AuthService } from "./auth.service";
 import { appConfig } from "../../config";
 
+const createUser = catchAsync(async (req, res) => {
+  const userData = req.body;
+  const result = await AuthService.createUser(userData);
+
+  sendResponse(res, {
+    success: true,
+    statusCode: status.OK,
+    message: "User successfully created.Check your email for code.",
+    data: result,
+  });
+});
+
 const userLogin = catchAsync(async (req, res, next) => {
   const result = await AuthService.userLogin(req.body);
 
-  // res.cookie("refreshToken", result.refreshToken, {
-  //   secure: appConfig.server.node_env === "production",
-  //   httpOnly: true,
-  // });
+  res.cookie("refreshToken", result.refreshToken, {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === "production",
+    //sameSite: "strict",
+    maxAge: 365 * 24 * 60 * 60 * 1000, // 365 days in milliseconds
+  });
 
   sendResponse(res, {
     success: true,
@@ -28,7 +42,7 @@ const verifyUser = catchAsync(async (req, res, next) => {
   sendResponse(res, {
     success: true,
     statusCode: status.OK,
-    message: "Email successfully verified.",
+    message: "Verification successfull",
     data: result,
   });
 });
@@ -94,6 +108,7 @@ const updatePassword = catchAsync(async (req, res) => {
 });
 
 export const AuthController = {
+  createUser,
   verifyUser,
   forgotPasswordRequest,
   resetPassword,

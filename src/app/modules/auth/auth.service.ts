@@ -9,6 +9,38 @@ import { UserAuthentication } from "../users/userAuthentication/user_authenticat
 import getExpiryTime from "../../utils/helper/getExpiryTime";
 import getOtp from "../../utils/helper/getOtp";
 import { sendEmail } from "../../utils/sendEmail";
+import getHashedPassword from "../../utils/helper/getHashedPassword";
+import { jsonWebToken } from "../../utils/jwt/jwt";
+import { appConfig } from "../../config";
+
+const createUser = async (data: {
+  email: string;
+  fullName: string;
+  password: string;
+}) => {
+  const userData = {
+    email: data.email,
+    password: await getHashedPassword(data.password),
+  };
+
+  const userProfile = {
+    fullName: data.fullName,
+  };
+
+  const userAuthentication = {
+    otp: getOtp(5).toString(),
+    token: null,
+    expDate: getExpiryTime(5),
+  };
+
+  const userRepo = myDataSource.getRepository(User);
+  const createUser = userRepo.create({
+    ...userData,
+    userProfile: userProfile,
+    authentication: userAuthentication,
+  });
+  return await userRepo.save(createUser);
+};
 
 const userLogin = async (loginData: { email: string; password: string }) => {
   const userData = await myDataSource.getRepository(User).findOne({
@@ -24,79 +56,81 @@ const userLogin = async (loginData: { email: string; password: string }) => {
     throw new Error("Invalid credentials: password");
   }
 
-  if (isExpired(userData.authentication.expDate)) {
-    throw new Error("You are not varified.");
-  } else {
-    logger.info("You have time");
-  }
-
   if (!userData.isVerified) {
     throw new Error("You are not varified.");
   }
 
-  return;
+  if (userData.isBlocked) {
+    throw new Error("You are blocked");
+  }
+  if (userData.isDeleted) {
+    throw new Error("Account deleted");
+  }
+
+  const tokenData = {
+    userRole: userData.role,
+    userEmail: userData.email,
+    userId: userData.id,
+  };
+
+  const accessToken = jsonWebToken.generateToken(
+    tokenData,
+    appConfig.jwt.jwt_access_secret as string,
+    appConfig.jwt.jwt_access_exprire
+  );
+
+  const refreshToken = jsonWebToken.generateToken(
+    tokenData,
+    appConfig.jwt.jwt_refresh_secret as string,
+    appConfig.jwt.jwt_refresh_exprire
+  );
+
+  return {
+    userData,
+    accessToken,
+    refreshToken,
+  };
 };
 
 const verifyUser = async (email: string, otp: string) => {
-  let updatedUserRepo;
-  let updatedAuthRepo;
   const userRepo = myDataSource.getRepository(User);
-  const authRepo = myDataSource.getRepository(UserAuthentication);
-  const userData = await userRepo.findOne({
-    where: { email: email },
-  }); // you don't need to mention relation if "eager" is true in user repo
+  const user = await userRepo.findOne({
+    where: { email },
+  });
 
-  if (!userData) {
+  if (!user) {
     throw new AppError(status.BAD_REQUEST, "User not found.");
   }
 
-  if (userData.id && userData.isVerified === false) {
-    if (
-      userData &&
-      userData?.authentication.expDate &&
-      isExpired(userData?.authentication.expDate)
-    ) {
-      throw new AppError(status.BAD_REQUEST, "Time is Expired.");
-    } else {
-      if (userData.authentication.otp === otp) {
-        updatedUserRepo = await userRepo.preload({
-          id: userData.id,
-          //field to update
-          isVerified: true,
-        });
-        updatedAuthRepo = await authRepo.preload({
-          id: userData.authentication.id,
-          // data that you want to save
-          otp: null,
-          expDate: null,
-        });
+  const auth = user.authentication;
 
-        if (!updatedAuthRepo || !updatedUserRepo) {
-          throw new AppError(
-            status.BAD_REQUEST,
-            "Failed to verify. Try again."
-          );
-        }
-        await authRepo.save(updatedAuthRepo);
-        await userRepo.save(updatedUserRepo);
-      } else {
-        throw new AppError(status.BAD_REQUEST, "Code not matched.");
-      }
-    }
-  } else {
-    // other logic
-
-    if (userData.isVerified && userData.needToResetPass) {
-      console.log("other logic");
-    } else {
-      throw new AppError(status.BAD_REQUEST, "Suspecious activities.");
-    }
+  if (!auth || !auth.otp || !auth.expDate) {
+    throw new AppError(status.BAD_REQUEST, "No OTP request found.");
   }
+
+  if (isExpired(auth.expDate)) {
+    throw new AppError(status.BAD_REQUEST, "OTP has expired.");
+  }
+
+  if (auth.otp !== otp) {
+    throw new AppError(status.BAD_REQUEST, "OTP is incorrect.");
+  }
+
+  if (user.isVerified) {
+    user.needToResetPass = !user.isVerified;
+  } else {
+    user.isVerified = true;
+  }
+
+  auth.otp = null;
+  auth.expDate = null;
+
+  await userRepo.save(user);
 
   return {
     accessToken: "",
     refreshToken: "",
-    user: { ...updatedUserRepo, password: "" },
+    user: { ...user, password: "" },
   };
 };
 
@@ -112,6 +146,10 @@ const resendCode = async (email: string) => {
   }
 
   const { authentication } = userData;
+
+  if (!authentication.otp) {
+    throw new AppError(status.BAD_REQUEST, "We can't send you code.");
+  }
 
   if (!isExpired(authentication.expDate)) {
     throw new AppError(
@@ -164,6 +202,7 @@ const updatePassword = async (
 ) => {};
 
 export const AuthService = {
+  createUser,
   userLogin,
   verifyUser,
   forgotPasswordRequest,

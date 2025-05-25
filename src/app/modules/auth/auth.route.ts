@@ -1,12 +1,19 @@
 import { Router } from "express";
 import { AuthController } from "./auth.controller";
 import { auth } from "../../middlewares/auth/auth";
+import zodValidator from "../../middlewares/zodValidator";
+import { zodCreateUserSchema } from "../users/user/user.validation";
 
 const router = Router();
 
-router.get("/get-access-token", AuthController.getNewAccessToken);
-
+router.post(
+  "/create-user",
+  zodValidator(zodCreateUserSchema),
+  AuthController.createUser
+);
 router.post("/login", AuthController.userLogin);
+
+router.get("/get-access-token", AuthController.getNewAccessToken);
 
 router.patch("/verify-user", AuthController.verifyUser);
 router.patch("/resend-code", AuthController.resendCode);

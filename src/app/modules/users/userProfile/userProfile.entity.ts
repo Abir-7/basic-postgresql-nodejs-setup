@@ -29,4 +29,7 @@ export class UserProfile {
 
   @Column({ type: "varchar", nullable: true })
   image?: string;
+
+  @OneToOne(() => User, (user) => user.userProfile)
+  user!: User;
 }

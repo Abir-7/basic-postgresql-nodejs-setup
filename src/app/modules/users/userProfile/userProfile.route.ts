@@ -8,7 +8,7 @@ const router = Router();
 router.patch(
   "/update-profile-image",
   auth("SUPERADMIN", "USER"),
-  upload.single("file"),
+  upload.single("image"),
   UserProfileController.updateProfileImage
 );
 

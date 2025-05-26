@@ -19,6 +19,11 @@
             "date": 1748187516660,
             "name": "F:\\postgress typeorm\\basic-postgresql-nodejs-setup\\logs\\2025-05-25-exceptions.log",
             "hash": "37c9264549b8ffbdd3d90f3996b1eec8cbbcadb05df48a77302114c37a69b2f6"
+        },
+        {
+            "date": 1748263079325,
+            "name": "F:\\postgress typeorm\\basic-postgresql-nodejs-setup\\logs\\2025-05-26-exceptions.log",
+            "hash": "77bbebc2dde4b4a312c5201730ba1f27fd3597627dfd0c4f7a3823616c36ba8d"
         }
     ],
     "hashType": "sha256"

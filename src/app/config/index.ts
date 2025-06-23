@@ -18,6 +18,9 @@ export const appConfig = {
     node_env: process.env.NODE_ENV,
     ip: process.env.IP_ADDRESS,
   },
+  rabbitMq: {
+    url: process.env.RABBITMQ_URL,
+  },
 
   jwt: {
     jwt_access_secret: process.env.JWT_ACCESS_SECRET,

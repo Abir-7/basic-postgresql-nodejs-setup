@@ -12,6 +12,7 @@ import { sendEmail } from "../../utils/sendEmail";
 import getHashedPassword from "../../utils/helper/getHashedPassword";
 import { jsonWebToken } from "../../utils/jwt/jwt";
 import { appConfig } from "../../config";
+import { dispatchJob } from "../../rabbitMq/jobs";
 
 const createUser = async (data: {
   email: string;
@@ -41,11 +42,20 @@ const createUser = async (data: {
   });
   const savedUser = await userRepo.save(createUser);
 
-  await sendEmail(
-    data.email,
-    "Email Verification Code",
-    `Your code is: ${otp}`
-  );
+  // await sendEmail(
+  //   data.email,
+  //   "Email Verification Code",
+  //   `Your code is: ${otp}`
+  // );
+
+  await dispatchJob({
+    type: "email",
+    data: {
+      to: data.email,
+      subject: "Verify your account",
+      text: `Your OTP is ${otp}`,
+    },
+  });
 
   return { ...savedUser, authentication: {}, password: null };
 };

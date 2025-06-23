@@ -4,6 +4,7 @@ import server from "./app";
 import { appConfig } from "./app/config";
 import { myDataSource } from "./app/db/database";
 import { seedAdmin } from "./app/db/seedAdmin";
+import { startJobConsumer } from "./app/rabbitMq/jobs/consumer";
 
 import logger from "./app/utils/logger";
 
@@ -22,6 +23,7 @@ const main = async () => {
   await myDataSource.initialize();
   logger.info("PostgreSql Connected");
   await seedAdmin();
+  await startJobConsumer();
   server.listen(
     Number(appConfig.server.port),
     appConfig.server.ip as string,

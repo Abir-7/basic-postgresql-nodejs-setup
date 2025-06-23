@@ -1,12 +1,25 @@
 version: "3.9"
 
 services:
+
+
+  rabbitmq:
+    image: rabbitmq:3-management
+    container_name: rabbitmq
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    environment:
+      RABBITMQ_DEFAULT_USER: guest
+      RABBITMQ_DEFAULT_PASS: guest
+
+
   postgres:
     image: postgres:17
     env_file:
       - .env
     ports:
-      - "5434:5432"
+      - "5433:5432"
     volumes:
       - pgdata:/var/lib/postgresql/data
 
@@ -14,13 +27,14 @@ services:
     build: .
     depends_on:
       - postgres
+      - rabbitmq
     env_file:
       - .env
     ports:
-      - "4500:4500"
+      - "4501:4500"
     volumes:
-      - .:/app           # Sync current directory to /app in container
+      - .:/app
     command: npm run dev
 
 volumes:
-  pgdata:
+  pgdata: {}

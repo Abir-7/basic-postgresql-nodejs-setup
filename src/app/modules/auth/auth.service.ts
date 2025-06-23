@@ -3,7 +3,7 @@ import { myDataSource } from "../../db/database";
 import AppError from "../../errors/AppError";
 import comparePassword from "../../utils/helper/comparePassword";
 import isExpired from "../../utils/helper/isExpired";
-import logger from "../../utils/logger";
+
 import { User } from "../users/user/user.entity";
 import { UserAuthentication } from "../users/userAuthentication/user_authentication.entity";
 import getExpiryTime from "../../utils/helper/getExpiryTime";
@@ -26,9 +26,9 @@ const createUser = async (data: {
   const userProfile = {
     fullName: data.fullName,
   };
-
+  const otp = getOtp(5).toString();
   const userAuthentication = {
-    otp: getOtp(5).toString(),
+    otp: otp,
     token: null,
     expDate: getExpiryTime(5),
   };
@@ -39,7 +39,15 @@ const createUser = async (data: {
     userProfile: userProfile,
     authentication: userAuthentication,
   });
-  return await userRepo.save(createUser);
+  const savedUser = await userRepo.save(createUser);
+
+  await sendEmail(
+    data.email,
+    "Email Verification Code",
+    `Your code is: ${otp}`
+  );
+
+  return { ...savedUser, authentication: {}, password: null };
 };
 
 const userLogin = async (loginData: { email: string; password: string }) => {

@@ -1,8 +1,10 @@
 import { AnyZodObject, ZodError } from "zod";
-import catchAsync from "../utils/serverTool/catchAsync";
+
 import { NextFunction, Request, Response } from "express";
-import unlinkFile from "./fileUpload/unlinkFiles";
+
 import { getRelativePath } from "./fileUpload/getRelativeFilePath";
+import unlinkFile from "../utils/unlinkFiles";
+import catchAsync from "../utils/catchAsync";
 
 const zodValidator = (schema: AnyZodObject) =>
   catchAsync(async (req: Request, res: Response, next: NextFunction) => {

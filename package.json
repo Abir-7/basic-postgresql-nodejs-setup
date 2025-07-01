@@ -8,7 +8,8 @@
     "start": "node ./dist/server.js",
     "dev": "ts-node-dev --respawn --transpile-only --poll ./src/server.ts",
     "docker:build": "docker-compose up --build",
-    "docker:d": "docker-compose up --build"
+    "docker:d": "docker-compose up --build",
+    "drizzle:push":"npx drizzle-kit push"
   },
   "keywords": [],
   "author": "",

@@ -1,16 +1,16 @@
-import dotenv from "dotenv";
+import * as dotenv from "dotenv";
 import path from "path";
 
 dotenv.config({ path: path.join(process.cwd(), ".env") });
 
 export const appConfig = {
   database: {
-    type: process.env.DB_TYPE,
-    host: process.env.DB_HOST,
-    port: parseInt(process.env.DB_PORT as string),
-    username: process.env.POSTGRES_USER,
-    password: process.env.POSTGRES_PASSWORD,
-    db_name: process.env.POSTGRES_DB,
+    // type: process.env.DB_TYPE,
+    // host: process.env.DB_HOST,
+    // port: parseInt(process.env.DB_PORT as string),
+    // username: process.env.POSTGRES_USER,
+    // password: process.env.POSTGRES_PASSWORD,
+    // db_name: process.env.POSTGRES_DB,
     dataBase_uri: process.env.DATABASE_URI, // Optional: if you're using full URI instead
   },
   server: {

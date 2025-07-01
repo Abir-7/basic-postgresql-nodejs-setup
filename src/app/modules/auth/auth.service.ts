@@ -1,11 +1,7 @@
 import status from "http-status";
-import { myDataSource } from "../../db/database";
 import AppError from "../../errors/AppError";
 import comparePassword from "../../utils/helper/comparePassword";
 import isExpired from "../../utils/helper/isExpired";
-
-import { User } from "../users/user/user.entity";
-import { UserAuthentication } from "../users/userAuthentication/user_authentication.entity";
 import getExpiryTime from "../../utils/helper/getExpiryTime";
 import getOtp from "../../utils/helper/getOtp";
 import { sendEmail } from "../../utils/sendEmail";
@@ -14,76 +10,89 @@ import { jsonWebToken } from "../../utils/jwt/jwt";
 import { appConfig } from "../../config";
 import { dispatchJob } from "../../rabbitMq/jobs";
 
+import { eq, and } from "drizzle-orm";
+import { db } from "../../db/db";
+import { users } from "../../db/schema/user.schema";
+import { userProfile } from "../../db/schema/userProfile.schema";
+import { userAuthentication } from "../../db/schema/user.authentication";
+
+// Create user
 const createUser = async (data: {
   email: string;
   fullName: string;
   password: string;
 }) => {
-  const userData = {
-    email: data.email,
-    password: await getHashedPassword(data.password),
-  };
-
-  const userProfile = {
-    fullName: data.fullName,
-  };
+  const hashedPassword = await getHashedPassword(data.password);
   const otp = getOtp(5).toString();
-  const userAuthentication = {
-    otp: otp,
-    token: null,
-    expDate: getExpiryTime(5),
-  };
+  const expDate = getExpiryTime(5);
 
-  const userRepo = myDataSource.getRepository(User);
-  const createUser = userRepo.create({
-    ...userData,
-    userProfile: userProfile,
-    authentication: userAuthentication,
+  return await db.transaction(async (tx) => {
+    // Insert user
+    const [createdUser] = await tx
+      .insert(users)
+      .values({
+        email: data.email,
+        password: hashedPassword,
+      })
+      .returning({ id: users.id, email: users.email });
+
+    // Insert profile
+    await tx.insert(userProfile).values({
+      userId: createdUser.id,
+      fullName: data.fullName,
+    });
+
+    // Insert authentication
+    await tx.insert(userAuthentication).values({
+      userId: createdUser.id,
+      otp,
+      expDate,
+    });
+
+    // Send OTP email (using job)
+    await dispatchJob({
+      type: "email",
+      data: {
+        to: data.email,
+        subject: "Verify your account",
+        text: `Your OTP is ${otp}`,
+      },
+    });
+
+    return {
+      ...createdUser,
+      password: null,
+      authentication: {},
+    };
   });
-  const savedUser = await userRepo.save(createUser);
-
-  // await sendEmail(
-  //   data.email,
-  //   "Email Verification Code",
-  //   `Your code is: ${otp}`
-  // );
-
-  await dispatchJob({
-    type: "email",
-    data: {
-      to: data.email,
-      subject: "Verify your account",
-      text: `Your OTP is ${otp}`,
-    },
-  });
-
-  return { ...savedUser, authentication: {}, password: null };
 };
 
+// User login
 const userLogin = async (loginData: { email: string; password: string }) => {
-  const userData = await myDataSource.getRepository(User).findOne({
-    where: { email: loginData.email },
-    relations: ["userProfile", "authentication"],
-  });
-  console.log("object", userData);
-  if (!userData) {
-    throw new Error("Invalid credentials: email");
-  }
+  const [userData] = await db
+    .select({
+      id: users.id,
+      email: users.email,
+      password: users.password,
+      role: users.role,
+      isVerified: users.isVerified,
+      isBlocked: users.isBlocked,
+      isDeleted: users.isDeleted,
+    })
+    .from(users)
+    .where(eq(users.email, loginData.email))
+    .limit(1);
 
-  if (!(await comparePassword(loginData.password, userData.password))) {
-    throw new Error("Invalid credentials: password");
-  }
-
-  if (!userData.isVerified) {
-    throw new Error("You are not varified.");
-  }
-
-  if (userData.isBlocked) {
-    throw new Error("You are blocked");
-  }
-  if (userData.isDeleted) {
-    throw new Error("Account deleted");
-  }
+  if (!userData)
+    throw new AppError(status.UNAUTHORIZED, "Invalid credentials: email");
+  if (!(await comparePassword(loginData.password, userData.password as string)))
+    throw new AppError(status.UNAUTHORIZED, "Invalid credentials: password");
+  if (!userData.isVerified)
+    throw new AppError(status.UNAUTHORIZED, "You are not verified.");
+  if (userData.isBlocked)
+    throw new AppError(status.UNAUTHORIZED, "You are blocked.");
+  if (userData.isDeleted)
+    throw new AppError(status.UNAUTHORIZED, "Account deleted.");
 
   const tokenData = {
     userRole: userData.role,
@@ -96,7 +105,6 @@ const userLogin = async (loginData: { email: string; password: string }) => {
     appConfig.jwt.jwt_access_secret as string,
     appConfig.jwt.jwt_access_exprire
   );
-
   const refreshToken = jsonWebToken.generateToken(
     tokenData,
     appConfig.jwt.jwt_refresh_secret as string,
@@ -104,23 +112,23 @@ const userLogin = async (loginData: { email: string; password: string }) => {
   );
 
   return {
-    userData,
+    userData: { ...userData, password: undefined },
     accessToken,
     refreshToken,
   };
 };
 
 const verifyUser = async (email: string, otp: string) => {
-  const userRepo = myDataSource.getRepository(User);
-  const user = await userRepo.findOne({
-    where: { email },
-  });
+  const [user] = await db.select().from(users).where(eq(users.email, email));
 
   if (!user) {
     throw new AppError(status.BAD_REQUEST, "User not found.");
   }
 
-  const auth = user.authentication;
+  const [auth] = await db
+    .select()
+    .from(userAuthentication)
+    .where(eq(userAuthentication.userId, user.id));
 
   if (!auth || !auth.otp || !auth.expDate) {
     throw new AppError(status.BAD_REQUEST, "No OTP request found.");
@@ -134,72 +142,69 @@ const verifyUser = async (email: string, otp: string) => {
     throw new AppError(status.BAD_REQUEST, "OTP is incorrect.");
   }
 
-  if (user.isVerified) {
-    user.needToResetPass = !user.isVerified;
-  } else {
-    user.isVerified = true;
-  }
+  await db.transaction(async (tx) => {
+    await tx
+      .update(users)
+      .set({
+        isVerified: true,
+        needToResetPass: false,
+      })
+      .where(eq(users.id, user.id));
 
-  auth.otp = null;
-  auth.expDate = null;
+    await tx
+      .update(userAuthentication)
+      .set({
+        otp: null,
+        expDate: null,
+      })
+      .where(eq(userAuthentication.id, auth.id));
+  });
 
-  await userRepo.save(user);
-
+  // Optionally return tokens
   return {
-    accessToken: "",
-    refreshToken: "",
-    user: { ...user, password: "" },
+    message: "User verified successfully",
   };
 };
 
-const forgotPasswordRequest = async (email: string) => {};
-
 const resendCode = async (email: string) => {
-  const userRepo = myDataSource.getRepository(User);
-  const authRepo = myDataSource.getRepository(UserAuthentication);
-  const userData = await userRepo.findOne({ where: { email } });
+  const [user] = await db.select().from(users).where(eq(users.email, email));
 
-  if (!userData || !userData.authentication) {
+  if (!user) {
     throw new AppError(status.BAD_REQUEST, "User not found.");
   }
 
-  const { authentication } = userData;
+  const [auth] = await db
+    .select()
+    .from(userAuthentication)
+    .where(eq(userAuthentication.userId, user.id));
 
-  if (!authentication.otp) {
-    throw new AppError(status.BAD_REQUEST, "We can't send you code.");
+  if (!auth) {
+    throw new AppError(status.BAD_REQUEST, "User auth record not found.");
   }
 
-  if (!isExpired(authentication.expDate)) {
+  if (!isExpired(auth.expDate)) {
     throw new AppError(
       status.BAD_REQUEST,
       "Use your previous code. Code is still valid."
     );
   }
 
-  const otp = getOtp(5);
+  const otp = getOtp(5).toString();
   const expDate = getExpiryTime(5);
 
-  const updatedAuth = await authRepo.preload({
-    id: authentication.id,
-    expDate,
-    otp: otp.toString(),
-  });
-  if (!updatedAuth) {
-    throw new AppError(status.BAD_REQUEST, "Failed to send code. Try again.");
-  }
+  await db.transaction(async (tx) => {
+    await tx
+      .update(userAuthentication)
+      .set({ otp, expDate })
+      .where(eq(userAuthentication.id, auth.id));
 
-  await myDataSource.transaction(async (transactionalEntityManager) => {
-    try {
-      await sendEmail(email, "verification code", otp.toString());
-
-      await transactionalEntityManager.save(UserAuthentication, updatedAuth);
-    } catch (error) {
-      throw new AppError(status.BAD_REQUEST, "Failed to send code. Try again.");
-    }
+    await sendEmail(email, "Verification code", otp);
   });
+
   return { message: "Code sent" };
 };
 
+const forgotPasswordRequest = async (email: string) => {};
 const resetPassword = async (
   token: string,
   userData: {
@@ -207,9 +212,6 @@ const resetPassword = async (
     confirm_password: string;
   }
 ) => {};
-
-const getNewAccessToken = async (refreshToken: string) => {};
-
 const updatePassword = async (
   userId: string,
   passData: {
@@ -219,6 +221,7 @@ const updatePassword = async (
   }
 ) => {};
 
+const getNewAccessToken = async (refreshToken: string) => {};
 export const AuthService = {
   createUser,
   userLogin,

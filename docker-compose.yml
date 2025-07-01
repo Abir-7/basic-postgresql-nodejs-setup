@@ -2,7 +2,6 @@ version: "3.9"
 
 services:
 
-
   rabbitmq:
     image: rabbitmq:3-management
     container_name: rabbitmq
@@ -15,19 +14,23 @@ services:
 
 
   postgres:
-    image: postgres:17
-    env_file:
-      - .env
+    image: postgres:latest
+    container_name: postgres
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: mydatabase
     ports:
-      - "5433:5432"
+      - "5432:5432"
     volumes:
       - pgdata:/var/lib/postgresql/data
 
-  play-scout:
+  node-express:
     build: .
     depends_on:
-      - postgres
       - rabbitmq
+      - postgres
     env_file:
       - .env
     ports:

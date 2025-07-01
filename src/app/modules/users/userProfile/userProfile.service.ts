@@ -1,67 +1,94 @@
 import status from "http-status";
-import { myDataSource } from "../../../db/database";
+
 import AppError from "../../../errors/AppError";
 import { removeFalsyFields } from "../../../utils/helper/removeFalsyField";
-import { User } from "../user/user.entity";
-import { UserProfile } from "./userProfile.entity";
 import unlinkFile from "../../../utils/unlinkFiles";
 import { getRelativePath } from "../../../middlewares/fileUpload/getRelativeFilePath";
-import { error } from "winston";
+
+import { eq } from "drizzle-orm";
+import { users } from "../../../db/schema/user.schema";
+import { db } from "../../../db/db";
+import { userProfile } from "../../../db/schema/userProfile.schema";
 
 const updateProfileImage = async (path: string, email: string) => {
   if (!path) {
     throw new AppError(status.NOT_FOUND, "Image not found");
   }
 
-  return await myDataSource
-    .transaction(async (manager) => {
-      const userRepo = manager.getRepository(User);
-      const userInfo = await userRepo.findOne({ where: { email } });
+  return await db
+    .transaction(async (tx) => {
+      // 1. Find user with profile by email
+      const [userWithProfile] = await tx
+        .select({
+          userId: users.id,
+          profileId: userProfile.id,
+          oldImage: userProfile.image,
+        })
+        .from(users)
+        .leftJoin(userProfile, eq(users.id, userProfile.userId))
+        .where(eq(users.email, email));
 
-      if (!userInfo?.userProfile) {
+      if (!userWithProfile || !userWithProfile.profileId) {
         throw new AppError(status.NOT_FOUND, "User not found");
       }
+
+      // 2. Prepare new image path
       const image = getRelativePath(path);
-      const oldImage = userInfo.userProfile.image;
+      const oldImage = userWithProfile.oldImage;
 
-      userInfo.userProfile.image = image;
+      // 3. Update profile image
+      await tx
+        .update(userProfile)
+        .set({ image })
+        .where(eq(userProfile.id, userWithProfile.profileId));
 
-      await manager.save(userInfo.userProfile);
-
+      // 4. Delete old image file if exists
       if (oldImage) {
         unlinkFile(oldImage);
       }
 
-      return userInfo.userProfile;
+      // 5. Return updated profile info (optional: fetch updated row)
+      const [updatedProfile] = await tx
+        .select()
+        .from(userProfile)
+        .where(eq(userProfile.id, userWithProfile.profileId));
+
+      return updatedProfile;
     })
-    .catch(async (error) => {
+    .catch((error: any) => {
       if (path) unlinkFile(getRelativePath(path));
       throw new Error(error);
     });
 };
 
 const updateProfileData = async (
-  profileData: Partial<UserProfile>,
-  id: string
+  profileData: Partial<typeof userProfile>,
+  userId: string
 ) => {
-  const userRepo = myDataSource.getRepository(User);
-  const userProfileRepo = myDataSource.getRepository(UserProfile);
+  // 1. Find profile by userId
+  const [profile] = await db
+    .select()
+    .from(userProfile)
+    .where(eq(userProfile.userId, `${userId}`));
 
-  // Get the user with profile
-  const user = await userRepo.findOne({ where: { id } });
-
-  if (!user?.userProfile?.id) {
-    throw new AppError(status.NOT_FOUND, "User or user profile not found");
+  if (!profile) {
+    throw new AppError(status.NOT_FOUND, "User profile not found");
   }
 
-  // Clean empty fields from input
+  // 2. Remove falsy fields from input
   const cleanedProfile = removeFalsyFields(profileData);
 
-  // Update the profile directly
-  const updatedProfile = await userProfileRepo.preload({
-    id: user.userProfile.id,
-    ...cleanedProfile,
-  });
+  // 3. Update profile
+  await db
+    .update(userProfile)
+    .set(cleanedProfile)
+    .where(eq(userProfile.id, profile.id));
+
+  // 4. Return updated profile (optional)
+  const [updatedProfile] = await db
+    .select()
+    .from(userProfile)
+    .where(eq(userProfile.id, profile.id));
 
   return updatedProfile;
 };

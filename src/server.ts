@@ -2,7 +2,8 @@
 
 import server from "./app";
 import { appConfig } from "./app/config";
-import { myDataSource } from "./app/db/database";
+import { pool } from "./app/db/db";
+
 import { seedAdmin } from "./app/db/seedAdmin";
 import { startJobConsumer } from "./app/rabbitMq/jobs/consumer";
 
@@ -20,8 +21,14 @@ process.on("unhandledRejection", (err) => {
 });
 
 const main = async () => {
-  await myDataSource.initialize();
-  logger.info("PostgreSql Connected");
+  try {
+    await pool.query("SELECT 1");
+    logger.info("✅ Database connection successful");
+  } catch (err) {
+    logger.error("❌ Failed to connect to database:", err);
+    process.exit(1);
+  }
+
   await seedAdmin();
   await startJobConsumer();
   server.listen(

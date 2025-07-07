@@ -6,24 +6,9 @@
     "auditLog": "F:\\postgress typeorm\\basic-postgresql-nodejs-setup\\logs\\.a6b6c314edc2f491d72bcaceff7dd25bfaab33b1-audit.json",
     "files": [
         {
-            "date": 1747922150740,
-            "name": "F:\\postgress typeorm\\basic-postgresql-nodejs-setup\\logs\\2025-05-22-app.log",
-            "hash": "efb253649f85a14694b8998fdfc243024d62177f72e435c3e5c3df3713c29b05"
-        },
-        {
-            "date": 1747936805191,
-            "name": "F:\\postgress typeorm\\basic-postgresql-nodejs-setup\\logs\\2025-05-23-app.log",
-            "hash": "21bd290eecd6802908b8dd6cad19d392fffc404bd81f5b8ab31195ffb8f0c329"
-        },
-        {
-            "date": 1748187516651,
-            "name": "F:\\postgress typeorm\\basic-postgresql-nodejs-setup\\logs\\2025-05-25-app.log",
-            "hash": "66b3deb318b64db22847922e75cc20469c7c022058f007355cb80026eeba1d41"
-        },
-        {
-            "date": 1748263079309,
-            "name": "F:\\postgress typeorm\\basic-postgresql-nodejs-setup\\logs\\2025-05-26-app.log",
-            "hash": "4353908f45c9528c67486421a93c76237d367378fa5394d30246a399e1ef7584"
+            "date": 1751902529243,
+            "name": "F:\\postgress typeorm\\basic-postgresql-nodejs-setup\\logs\\2025-07-07-app.log",
+            "hash": "6efa37d2f193855b23e220418c77c6ba28e44924396cd7461df6712aa74f0da4"
         }
     ],
     "hashType": "sha256"

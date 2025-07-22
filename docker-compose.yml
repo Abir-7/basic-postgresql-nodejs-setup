@@ -17,7 +17,8 @@ services:
   node-express:
     build: .
     depends_on:
-      - rabbitmq
+      rabbitmq:
+        condition: service_healthy
     env_file:
       - .env
     ports:

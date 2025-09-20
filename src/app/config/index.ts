@@ -18,7 +18,7 @@ export const appConfig = {
     node_env: process.env.NODE_ENV,
     ip: process.env.IP_ADDRESS,
   },
-  rabbitMq: {
+  rabbit_mq: {
     url: process.env.RABBITMQ_URL,
   },
 

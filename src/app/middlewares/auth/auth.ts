@@ -8,9 +8,9 @@ import { appConfig } from "../../config";
 
 import { eq } from "drizzle-orm";
 import { db } from "../../db/db";
-import { users } from "../../db/schema/user.schema";
-import { userProfile } from "../../db/schema/userProfile.schema";
-import { userAuthentication } from "../../db/schema/user.authentication";
+import { User } from "../../db/schema/user.schema";
+import { UserProfile } from "../../db/schema/userProfile.schema";
+import { UserAuthentication } from "../../db/schema/user.authentication";
 
 export const auth =
   (...userRole: TUserRole[]) =>
@@ -40,20 +40,20 @@ export const auth =
       // Fetch user with profile and authentication via LEFT JOIN
       const [userData] = await db
         .select({
-          id: users.id,
-          email: users.email,
-          role: users.role,
-          isVerified: users.isVerified,
-          profileFullName: userProfile.fullName,
-          profilePhone: userProfile.phone,
-          authToken: userAuthentication.token,
-          authOtp: userAuthentication.otp,
-          authExpDate: userAuthentication.expDate,
+          id: User.id,
+          email: User.email,
+          role: User.role,
+          isVerified: User.is_verified,
+          profileFullName: UserProfile.full_name,
+          profilePhone: UserProfile.phone,
+          authToken: UserAuthentication.token,
+          authOtp: UserAuthentication.otp,
+          authExpDate: UserAuthentication.exp_date,
         })
-        .from(users)
-        .leftJoin(userProfile, eq(users.id, userProfile.userId))
-        .leftJoin(userAuthentication, eq(users.id, userAuthentication.userId))
-        .where(eq(users.id, decodedData.userId));
+        .from(User)
+        .leftJoin(UserProfile, eq(User.id, UserProfile.user_id))
+        .leftJoin(UserAuthentication, eq(User.id, UserAuthentication.user_id))
+        .where(eq(User.id, decodedData.userId));
 
       if (!userData) {
         return next(

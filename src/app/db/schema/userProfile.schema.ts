@@ -1,15 +1,15 @@
 import { pgTable } from "drizzle-orm/pg-core";
 import * as t from "drizzle-orm/pg-core";
-import { users } from "./user.schema";
+import { User } from "./user.schema";
 
-export const userProfile = pgTable(
+export const UserProfile = pgTable(
   "user_profiles",
   {
     id: t.uuid().primaryKey().defaultRandom(),
 
-    fullName: t.varchar().notNull(),
+    full_name: t.varchar().notNull(),
 
-    dateOfBirth: t.date(),
+    date_of_birth: t.date(),
 
     phone: t.varchar(),
 
@@ -17,16 +17,16 @@ export const userProfile = pgTable(
 
     image: t.varchar(),
 
-    isDeleted: t.boolean().default(false),
+    is_deleted: t.boolean().default(false),
 
     createdAt: t.timestamp().defaultNow().notNull(),
 
     updatedAt: t.timestamp(),
 
-    userId: t
+    user_id: t
       .uuid()
       .notNull()
-      .references(() => users.id, { onDelete: "cascade" }),
+      .references(() => User.id, { onDelete: "cascade" }),
   },
-  (table) => [t.uniqueIndex("userId_idx").on(table.userId)]
+  (table) => [t.uniqueIndex("userId_idx").on(table.user_id)]
 );

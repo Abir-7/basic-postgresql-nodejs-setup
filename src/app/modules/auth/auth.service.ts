@@ -4,17 +4,18 @@ import comparePassword from "../../utils/helper/comparePassword";
 import isExpired from "../../utils/helper/isExpired";
 import getExpiryTime from "../../utils/helper/getExpiryTime";
 import getOtp from "../../utils/helper/getOtp";
-import { sendEmail } from "../../utils/sendEmail";
+
 import getHashedPassword from "../../utils/helper/getHashedPassword";
 import { jsonWebToken } from "../../utils/jwt/jwt";
 import { appConfig } from "../../config";
-import { dispatchJob } from "../../rabbitMq/jobs";
 
 import { eq, and } from "drizzle-orm";
 import { db } from "../../db/db";
-import { users } from "../../db/schema/user.schema";
-import { userProfile } from "../../db/schema/userProfile.schema";
-import { userAuthentication } from "../../db/schema/user.authentication";
+
+import { publishJob } from "../../rabbitMq/publisher";
+import { User } from "../../db/schema/user.schema";
+import { UserProfile } from "../../db/schema/userProfile.schema";
+import { UserAuthentication } from "../../db/schema/user.authentication";
 
 // Create user
 const createUser = async (data: {
@@ -29,34 +30,31 @@ const createUser = async (data: {
   return await db.transaction(async (tx) => {
     // Insert user
     const [createdUser] = await tx
-      .insert(users)
+      .insert(User)
       .values({
         email: data.email,
         password: hashedPassword,
       })
-      .returning({ id: users.id, email: users.email });
+      .returning({ id: User.id, email: User.email });
 
     // Insert profile
-    await tx.insert(userProfile).values({
-      userId: createdUser.id,
-      fullName: data.fullName,
+    await tx.insert(UserProfile).values({
+      user_id: createdUser.id,
+      full_name: data.fullName,
     });
 
     // Insert authentication
-    await tx.insert(userAuthentication).values({
-      userId: createdUser.id,
+    await tx.insert(UserAuthentication).values({
+      user_id: createdUser.id,
       otp,
-      expDate,
+      exp_date: expDate,
     });
 
     // Send OTP email (using job)
-    await dispatchJob({
-      type: "email",
-      data: {
-        to: data.email,
-        subject: "Verify your account",
-        text: `Your OTP is ${otp}`,
-      },
+    await publishJob("email_queue", {
+      to: data.email,
+      subject: "Email Verification Code",
+      body: otp.toString(),
     });
 
     return {
@@ -71,16 +69,16 @@ const createUser = async (data: {
 const userLogin = async (loginData: { email: string; password: string }) => {
   const [userData] = await db
     .select({
-      id: users.id,
-      email: users.email,
-      password: users.password,
-      role: users.role,
-      isVerified: users.isVerified,
-      isBlocked: users.isBlocked,
-      isDeleted: users.isDeleted,
+      id: User.id,
+      email: User.email,
+      password: User.password,
+      role: User.role,
+      isVerified: User.is_verified,
+      isBlocked: User.is_blocked,
+      isDeleted: User.is_deleted,
     })
-    .from(users)
-    .where(eq(users.email, loginData.email))
+    .from(User)
+    .where(eq(User.email, loginData.email))
     .limit(1);
 
   if (!userData)
@@ -119,7 +117,7 @@ const userLogin = async (loginData: { email: string; password: string }) => {
 };
 
 const verifyUser = async (email: string, otp: string) => {
-  const [user] = await db.select().from(users).where(eq(users.email, email));
+  const [user] = await db.select().from(User).where(eq(User.email, email));
 
   if (!user) {
     throw new AppError(status.BAD_REQUEST, "User not found.");
@@ -127,14 +125,14 @@ const verifyUser = async (email: string, otp: string) => {
 
   const [auth] = await db
     .select()
-    .from(userAuthentication)
-    .where(eq(userAuthentication.userId, user.id));
+    .from(UserAuthentication)
+    .where(eq(UserAuthentication.user_id, user.id));
 
-  if (!auth || !auth.otp || !auth.expDate) {
+  if (!auth || !auth.otp || !auth.exp_date) {
     throw new AppError(status.BAD_REQUEST, "No OTP request found.");
   }
 
-  if (isExpired(auth.expDate)) {
+  if (isExpired(auth.exp_date)) {
     throw new AppError(status.BAD_REQUEST, "OTP has expired.");
   }
 
@@ -144,20 +142,20 @@ const verifyUser = async (email: string, otp: string) => {
 
   await db.transaction(async (tx) => {
     await tx
-      .update(users)
+      .update(User)
       .set({
-        isVerified: true,
-        needToResetPass: false,
+        is_verified: true,
+        need_to_reset_pass: false,
       })
-      .where(eq(users.id, user.id));
+      .where(eq(User.id, user.id));
 
     await tx
-      .update(userAuthentication)
+      .update(UserAuthentication)
       .set({
         otp: null,
-        expDate: null,
+        exp_date: null,
       })
-      .where(eq(userAuthentication.id, auth.id));
+      .where(eq(UserAuthentication.id, auth.id));
   });
 
   // Optionally return tokens
@@ -167,7 +165,7 @@ const verifyUser = async (email: string, otp: string) => {
 };
 
 const resendCode = async (email: string) => {
-  const [user] = await db.select().from(users).where(eq(users.email, email));
+  const [user] = await db.select().from(User).where(eq(User.email, email));
 
   if (!user) {
     throw new AppError(status.BAD_REQUEST, "User not found.");
@@ -175,14 +173,14 @@ const resendCode = async (email: string) => {
 
   const [auth] = await db
     .select()
-    .from(userAuthentication)
-    .where(eq(userAuthentication.userId, user.id));
+    .from(UserAuthentication)
+    .where(eq(UserAuthentication.user_id, user.id));
 
   if (!auth) {
     throw new AppError(status.BAD_REQUEST, "User auth record not found.");
   }
 
-  if (!isExpired(auth.expDate)) {
+  if (!isExpired(auth.exp_date)) {
     throw new AppError(
       status.BAD_REQUEST,
       "Use your previous code. Code is still valid."
@@ -194,11 +192,15 @@ const resendCode = async (email: string) => {
 
   await db.transaction(async (tx) => {
     await tx
-      .update(userAuthentication)
-      .set({ otp, expDate })
-      .where(eq(userAuthentication.id, auth.id));
+      .update(UserAuthentication)
+      .set({ otp, exp_date: expDate })
+      .where(eq(UserAuthentication.id, auth.id));
+  });
 
-    await sendEmail(email, "Verification code", otp);
+  await publishJob("email_queue", {
+    to: email,
+    subject: "Email Verification Code",
+    body: otp.toString(),
   });
 
   return { message: "Code sent" };

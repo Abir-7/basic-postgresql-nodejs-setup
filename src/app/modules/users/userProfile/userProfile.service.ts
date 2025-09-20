@@ -6,9 +6,9 @@ import unlinkFile from "../../../utils/unlinkFiles";
 import { getRelativePath } from "../../../middlewares/fileUpload/getRelativeFilePath";
 
 import { eq } from "drizzle-orm";
-import { users } from "../../../db/schema/user.schema";
+import { User } from "../../../db/schema/user.schema";
 import { db } from "../../../db/db";
-import { userProfile } from "../../../db/schema/userProfile.schema";
+import { UserProfile } from "../../../db/schema/userProfile.schema";
 
 const updateProfileImage = async (path: string, email: string) => {
   if (!path) {
@@ -20,13 +20,13 @@ const updateProfileImage = async (path: string, email: string) => {
       // 1. Find user with profile by email
       const [userWithProfile] = await tx
         .select({
-          userId: users.id,
-          profileId: userProfile.id,
-          oldImage: userProfile.image,
+          userId: User.id,
+          profileId: UserProfile.id,
+          oldImage: UserProfile.image,
         })
-        .from(users)
-        .leftJoin(userProfile, eq(users.id, userProfile.userId))
-        .where(eq(users.email, email));
+        .from(User)
+        .leftJoin(UserProfile, eq(User.id, UserProfile.user_id))
+        .where(eq(User.email, email));
 
       if (!userWithProfile || !userWithProfile.profileId) {
         throw new AppError(status.NOT_FOUND, "User not found");
@@ -38,9 +38,9 @@ const updateProfileImage = async (path: string, email: string) => {
 
       // 3. Update profile image
       await tx
-        .update(userProfile)
+        .update(UserProfile)
         .set({ image })
-        .where(eq(userProfile.id, userWithProfile.profileId));
+        .where(eq(UserProfile.id, userWithProfile.profileId));
 
       // 4. Delete old image file if exists
       if (oldImage) {
@@ -50,8 +50,8 @@ const updateProfileImage = async (path: string, email: string) => {
       // 5. Return updated profile info (optional: fetch updated row)
       const [updatedProfile] = await tx
         .select()
-        .from(userProfile)
-        .where(eq(userProfile.id, userWithProfile.profileId));
+        .from(UserProfile)
+        .where(eq(UserProfile.id, userWithProfile.profileId));
 
       return updatedProfile;
     })
@@ -62,14 +62,14 @@ const updateProfileImage = async (path: string, email: string) => {
 };
 
 const updateProfileData = async (
-  profileData: Partial<typeof userProfile>,
+  profileData: Partial<typeof UserProfile>,
   userId: string
 ) => {
   // 1. Find profile by userId
   const [profile] = await db
     .select()
-    .from(userProfile)
-    .where(eq(userProfile.userId, `${userId}`));
+    .from(UserProfile)
+    .where(eq(UserProfile.user_id, `${userId}`));
 
   if (!profile) {
     throw new AppError(status.NOT_FOUND, "User profile not found");
@@ -80,15 +80,15 @@ const updateProfileData = async (
 
   // 3. Update profile
   await db
-    .update(userProfile)
+    .update(UserProfile)
     .set(cleanedProfile)
-    .where(eq(userProfile.id, profile.id));
+    .where(eq(UserProfile.id, profile.id));
 
   // 4. Return updated profile (optional)
   const [updatedProfile] = await db
     .select()
-    .from(userProfile)
-    .where(eq(userProfile.id, profile.id));
+    .from(UserProfile)
+    .where(eq(UserProfile.id, profile.id));
 
   return updatedProfile;
 };

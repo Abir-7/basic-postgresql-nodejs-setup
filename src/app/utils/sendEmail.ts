@@ -9,7 +9,7 @@ import AppError from "../errors/AppError";
 import { appConfig } from "../config";
 import logger from "./logger";
 
-export async function sendEmail(email: string, subject: string, text: string) {
+export async function send_email(email: string, subject: string, text: string) {
   try {
     const transporter = nodemailer.createTransport({
       host: appConfig.email.host,

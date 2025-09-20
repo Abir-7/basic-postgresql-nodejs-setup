@@ -1,63 +1,67 @@
 import { eq } from "drizzle-orm";
 import { TUserRole, userRoles } from "../middlewares/auth/auth.interface";
-import getHashedPassword from "../utils/helper/getHashedPassword";
+import get_hashed_password from "../utils/helper/getHashedPassword";
 import { db } from "./db";
-import { userAuthentication } from "./schema/user.authentication";
-import { users } from "./schema/user.schema";
-import { userProfile } from "./schema/userProfile.schema";
+import { UserAuthentication } from "./schema/user.authentication";
+import { User } from "./schema/user.schema";
+import { UserProfile } from "./schema/userProfile.schema";
+import { appConfig } from "../config";
+import logger from "../utils/logger";
 
 export async function seedAdmin() {
-  const adminEmail = "admin@example.com";
+  const adminEmail = appConfig.admin.email as string;
   const adminRole: TUserRole = "SUPERADMIN";
 
   // Check if admin user exists
-  const existingAdmin = await db
+  const existing_admin = await db
     .select()
-    .from(users)
-    .where(eq(users.role, adminRole))
+    .from(User)
+    .where(eq(User.role, adminRole))
     .limit(1);
 
-  if (existingAdmin.length > 0) {
+  if (existing_admin.length > 0) {
     console.log("Admin user already exists, skipping seed.");
     return;
   }
 
   // Hash password
-  const hashedPassword = await getHashedPassword("admin123");
+  const hashedPassword = await get_hashed_password(
+    appConfig.admin.password as string
+  );
 
   // Run all inserts in a transaction
   await db.transaction(async (tx) => {
     // 1. Insert user and get inserted id
-    const [insertedUser] = await tx
-      .insert(users)
+    const [inserted_user] = await tx
+      .insert(User)
       .values({
-        email: adminEmail,
+        email: adminEmail as string,
         password: hashedPassword,
         role: adminRole,
-        isVerified: true,
-        needToResetPass: false,
+        is_verified: true,
+        need_to_reset_pass: false,
       })
       .returning({
-        id: users.id,
+        id: User.id,
       });
 
     // 2. Insert user profile
-    await tx.insert(userProfile).values({
-      fullName: "ADMIN-1",
+    await tx.insert(UserProfile).values({
+      full_name: "ADMIN-1",
       phone: "01795377643",
-      userId: insertedUser.id,
-      isDeleted: false,
+      user_id: inserted_user.id,
+      is_deleted: false,
       createdAt: new Date(),
     });
 
     // 3. Insert user authentication
-    await tx.insert(userAuthentication).values({
-      userId: insertedUser.id,
+    await tx.insert(UserAuthentication).values({
+      user_id: inserted_user.id,
       otp: null,
-      expDate: null,
+      exp_date: null,
       token: null,
     });
 
-    console.log("Admin user seeded successfully!");
+    logger.info("Admin user seeded successfully!");
   });
 }

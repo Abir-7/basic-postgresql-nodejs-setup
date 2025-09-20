@@ -4,17 +4,17 @@ import * as t from "drizzle-orm/pg-core";
 
 export const rolesEnum = pgEnum("roles", userRoles);
 
-export const users = pgTable(
+export const User = pgTable(
   "users",
   {
     id: t.uuid().primaryKey().defaultRandom(),
     email: t.varchar().notNull(),
     role: rolesEnum().default("USER"),
     password: t.varchar(),
-    isVerified: t.boolean().default(false),
-    needToResetPass: t.boolean().default(false),
-    isBlocked: t.boolean().default(false),
-    isDeleted: t.boolean().default(false),
+    is_verified: t.boolean().default(false),
+    need_to_reset_pass: t.boolean().default(false),
+    is_blocked: t.boolean().default(false),
+    is_deleted: t.boolean().default(false),
     createdAt: t.timestamp().defaultNow().notNull(),
     updatedAt: t.timestamp(),
   },

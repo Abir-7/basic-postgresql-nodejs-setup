@@ -1,3 +1,4 @@
+import { startConsumers } from "./app/rabbitMq/worker";
 /* eslint-disable no-console */
 
 import server from "./app";
@@ -5,7 +6,6 @@ import { appConfig } from "./app/config";
 import { pool } from "./app/db/db";
 
 import { seedAdmin } from "./app/db/seedAdmin";
-import { startJobConsumer } from "./app/rabbitMq/jobs/consumer";
 
 import logger from "./app/utils/logger";
 
@@ -30,7 +30,7 @@ const main = async () => {
   }
 
   await seedAdmin();
-  await startJobConsumer();
+  startConsumers();
   server.listen(
     Number(appConfig.server.port),
     appConfig.server.ip as string,

@@ -97,7 +97,7 @@ const resetPassword = catchAsync(async (req, res, next) => {
 });
 
 const getNewAccessToken = catchAsync(async (req, res) => {
-  const refreshToken = req.cookies.refreshToken;
+  const refreshToken = req.cookies.refreshToken || req.body.refresh_token;
   const result = await AuthService.getNewAccessToken(refreshToken);
   sendResponse(res, {
     data: result,

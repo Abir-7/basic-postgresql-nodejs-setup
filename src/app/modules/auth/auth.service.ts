@@ -121,12 +121,12 @@ const userLogin = async (loginData: { email: string; password: string }) => {
   const accessToken = jsonWebToken.generateToken(
     tokenData,
     appConfig.jwt.jwt_access_secret as string,
-    appConfig.jwt.jwt_access_exprire
+    appConfig.jwt.jwt_access_expire
   );
   const refreshToken = jsonWebToken.generateToken(
     tokenData,
     appConfig.jwt.jwt_refresh_secret as string,
-    appConfig.jwt.jwt_refresh_exprire
+    appConfig.jwt.jwt_refresh_expire
   );
 
   return {
@@ -417,7 +417,34 @@ const updatePassword = async (
   return { message: "Password updated successfully." };
 };
 
-const getNewAccessToken = async (refreshToken: string) => {};
+const getNewAccessToken = async (refreshToken: string) => {
+  if (!refreshToken) {
+    throw new AppError(status.UNAUTHORIZED, "Refresh token not found.");
+  }
+  const decoded = jsonWebToken.verifyJwt(
+    refreshToken,
+    appConfig.jwt.jwt_refresh_secret as string
+  );
+  const { userEmail, userId, userRole } = decoded;
+
+  if (userEmail && userId && userRole) {
+    const jwt_payload = {
+      userEmail,
+      userId,
+      userRole,
+    };
+
+    const access_token = jsonWebToken.generateToken(
+      jwt_payload,
+      appConfig.jwt.jwt_access_secret as string,
+      appConfig.jwt.jwt_access_expire
+    );
+
+    return { access_token };
+  } else {
+    throw new AppError(status.UNAUTHORIZED, "You are unauthorized.");
+  }
+};
 export const AuthService = {
   createUser,
   userLogin,

@@ -58,6 +58,18 @@ const forgotPasswordRequest = catchAsync(async (req, res, next) => {
     data: result,
   });
 });
+
+const verifyReset = catchAsync(async (req, res, next) => {
+  const { email, otp } = req.body;
+  const result = await AuthService.verifyReset(email, otp);
+
+  sendResponse(res, {
+    success: true,
+    statusCode: status.OK,
+    message: "Reset password req verified.",
+    data: result,
+  });
+});
 const resendCode = catchAsync(async (req, res, next) => {
   const { email } = req.body;
   const result = await AuthService.resendCode(email);
@@ -111,6 +123,7 @@ export const AuthController = {
   createUser,
   verifyUser,
   forgotPasswordRequest,
+  verifyReset,
   resetPassword,
   resendCode,
   userLogin,

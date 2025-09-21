@@ -26,7 +26,7 @@ const createUser = async (data: {
 }) => {
   const hashedPassword = await getHashedPassword(data.password);
   const otp = getOtp(5).toString();
-  const expDate = getExpiryTime(5);
+  const expDate = getExpiryTime(10);
 
   return await db.transaction(async (tx) => {
     // 1️⃣ Check if a user with this email exists
@@ -102,10 +102,9 @@ const userLogin = async (loginData: { email: string; password: string }) => {
     .where(eq(User.email, loginData.email))
     .limit(1);
 
-  if (!userData)
-    throw new AppError(status.UNAUTHORIZED, "Invalid credentials: email");
+  if (!userData) throw new AppError(status.UNAUTHORIZED, "Email not matched");
   if (!(await comparePassword(loginData.password, userData.password as string)))
-    throw new AppError(status.UNAUTHORIZED, "Invalid credentials: password");
+    throw new AppError(status.UNAUTHORIZED, "Password not match");
   if (!userData.isVerified)
     throw new AppError(status.UNAUTHORIZED, "You are not verified.");
   if (userData.isBlocked)
@@ -216,7 +215,7 @@ const resendCode = async (email: string) => {
 
   // 3️⃣ Generate new OTP and expiry
   const otp = getOtp(5).toString();
-  const expDate = getExpiryTime(5);
+  const expDate = getExpiryTime(10);
 
   // 4️⃣ Update authentication
   await db.transaction(async (tx) => {
@@ -275,13 +274,111 @@ const forgotPasswordRequest = async (email: string) => {
   return { message: "Code sent." };
 };
 
+const verifyReset = async (email: string, otp: string) => {
+  const expDate = getExpiryTime(10);
+  const [user] = await db.select().from(User).where(eq(User.email, email));
+
+  if (!user) {
+    throw new AppError(status.BAD_REQUEST, "User not found.");
+  }
+
+  const [auth] = await db
+    .select()
+    .from(UserAuthentication)
+    .where(eq(UserAuthentication.user_id, user.id));
+
+  if (!auth || !auth.otp || !auth.exp_date) {
+    throw new AppError(status.BAD_REQUEST, "No OTP request found.");
+  }
+
+  if (isExpired(auth.exp_date)) {
+    throw new AppError(status.BAD_REQUEST, "OTP has expired.");
+  }
+
+  if (auth.otp !== otp) {
+    throw new AppError(status.BAD_REQUEST, "OTP is incorrect.");
+  }
+
+  const token = jsonWebToken.generateToken(
+    { userEmail: user.email, userId: user.id },
+    appConfig.jwt.jwt_access_secret as string,
+    "10m"
+  );
+
+  await db.transaction(async (tx) => {
+    await tx
+      .update(User)
+      .set({
+        need_to_reset_pass: true,
+      })
+      .where(eq(User.id, user.id));
+
+    await tx
+      .update(UserAuthentication)
+      .set({
+        otp: null,
+        exp_date: expDate,
+        token: token,
+      })
+      .where(eq(UserAuthentication.id, auth.id));
+  });
+
+  // Optionally return tokens
+  return {
+    message: "Reset request verified successfully",
+  };
+};
+
 const resetPassword = async (
   token: string,
   userData: {
     new_password: string;
     confirm_password: string;
   }
-) => {};
+) => {
+  const { new_password, confirm_password } = userData;
+
+  if (!token) {
+    throw new AppError(
+      status.BAD_REQUEST,
+      "You are not allowed to reset password."
+    );
+  }
+
+  if (new_password !== confirm_password) {
+    throw new AppError(500, "Password not matched");
+  }
+
+  const { userId } = jsonWebToken.decodeToken(token);
+  console.log(userId);
+  const [userAuthData] = await db
+    .select()
+    .from(UserAuthentication)
+    .where(eq(UserAuthentication.user_id, userId));
+
+  if ((userAuthData?.token as string) !== token) {
+    throw new AppError(500, "Token not matched");
+  }
+
+  if (isExpired(userAuthData.exp_date)) {
+    throw new AppError(500, "Token time expired.");
+  }
+
+  const hashedPassword = await getHashedPassword(new_password);
+
+  await db
+    .update(User)
+    .set({ password: hashedPassword, need_to_reset_pass: false })
+    .where(eq(User.id, userId));
+
+  await db
+    .update(UserAuthentication)
+    .set({ token: null, otp: null, exp_date: null })
+    .where(eq(UserAuthentication.user_id, userId));
+
+  return { message: "Password reset success." };
+};
+
 const updatePassword = async (
   userId: string,
   passData: {
@@ -289,7 +386,29 @@ const updatePassword = async (
     confirm_password: string;
     old_password: string;
   }
-) => {};
+) => {
+  const { confirm_password, old_password, new_password } = passData;
+  const [userData] = await db
+    .select({ user_id: User.id, password: User.password })
+    .from(User)
+    .where(eq(User.id, userId));
+
+  if ((await comparePassword(old_password, userData.password)) == false) {
+    throw new AppError(500, "Old password not matched.");
+  }
+  if (new_password !== confirm_password) {
+    throw new AppError(500, "Password not matched");
+  }
+
+  const hashedPassword = await getHashedPassword(new_password);
+
+  await db
+    .update(User)
+    .set({ password: hashedPassword, need_to_reset_pass: false })
+    .where(eq(User.id, userData.user_id));
+
+  return { message: "Password updated successfully." };
+};
 
 const getNewAccessToken = async (refreshToken: string) => {};
 export const AuthService = {
@@ -297,6 +416,7 @@ export const AuthService = {
   userLogin,
   verifyUser,
   forgotPasswordRequest,
+  verifyReset,
   resetPassword,
   getNewAccessToken,
   updatePassword,

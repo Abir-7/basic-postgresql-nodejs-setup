@@ -11,6 +11,7 @@ import {
 import { userRoles } from "../../middlewares/auth/auth.interface";
 import { UserProfile } from "./userProfile.schema";
 import { relations } from "drizzle-orm";
+import { UserAuthentication } from "./user.authentication";
 
 export const rolesEnum = pgEnum("roles", userRoles);
 
@@ -33,4 +34,5 @@ export const User = pgTable(
 
 export const UserRelations = relations(User, ({ one }) => ({
   profile: one(UserProfile),
+  auth_data: one(UserAuthentication),
 }));

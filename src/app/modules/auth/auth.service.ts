@@ -1,3 +1,4 @@
+import { auth } from "./../../middlewares/auth/auth";
 import status from "http-status";
 import AppError from "../../errors/AppError";
 import comparePassword from "../../utils/helper/comparePassword";
@@ -235,19 +236,43 @@ const resendCode = async (email: string) => {
   return { message: "New OTP sent successfully" };
 };
 
-const forgotPasswordRequest = async (user_id: string) => {
-  const profile = await db.query.User.findFirst({
-    where: (p) => eq(p.id, user_id),
-    with: {
-      profile: true,
-    },
-  });
+const forgotPasswordRequest = async (email: string) => {
+  const expiresAt = getExpiryTime(10);
+  const otp = getOtp(4);
+  const [profile] = await db
+    .select({
+      id: User.id,
+      email: User.email,
 
-  if (!profile) {
-    throw new Error("Profile not found");
+      authId: UserAuthentication.id,
+    })
+    .from(User)
+    .leftJoin(UserAuthentication, eq(User.id, UserAuthentication.user_id))
+    .where(eq(User.email, email));
+
+  if (!profile) throw new Error("Profile not found");
+
+  const newAuthData = {
+    otp: otp.toString(),
+    exp_date: expiresAt,
+    need_to_reset_pass: false,
+    token: null,
+  };
+
+  if (profile.authId) {
+    await db
+      .update(UserAuthentication)
+      .set(newAuthData)
+      .where(eq(UserAuthentication.id, profile.authId));
   }
 
-  return profile;
+  await publishJob("email_queue", {
+    to: email,
+    subject: "Reset Password Verification Code",
+    body: otp.toString(),
+  });
+
+  return { message: "Code sent." };
 };
 
 const resetPassword = async (

@@ -392,6 +392,9 @@ const updatePassword = async (
     .select({ user_id: User.id, password: User.password })
     .from(User)
     .where(eq(User.id, userId));
+  if (!userData) {
+    throw new AppError(404, "User not found");
+  }
 
   if ((await comparePassword(old_password, userData.password)) == false) {
     throw new AppError(500, "Old password not matched.");

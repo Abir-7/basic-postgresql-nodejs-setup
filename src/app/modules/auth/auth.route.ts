@@ -17,7 +17,7 @@ router.get("/get-access-token", AuthController.getNewAccessToken);
 
 router.patch("/verify-user", AuthController.verifyUser);
 router.patch("/resend-code", AuthController.resendCode);
-router.patch("/forgot-password-request", AuthController.forgotPasswordRequest);
+router.patch("/forgot-password", AuthController.forgotPasswordRequest);
 router.patch("/reset-password", AuthController.resetPassword);
 router.patch("/update-password", auth("USER"), AuthController.updatePassword);
 export const AuthRoute = router;

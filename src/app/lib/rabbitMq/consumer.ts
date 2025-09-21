@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import logger from "../utils/logger";
+
+import logger from "../../utils/serverTools/logger";
 import { getChannel } from "./rabbit_mq";
 
 type job_handler = (data: any) => Promise<void>;

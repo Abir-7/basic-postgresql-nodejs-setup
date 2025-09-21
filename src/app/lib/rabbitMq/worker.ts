@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/explicit-module-boundary-types */
 
-import logger from "../utils/logger";
-import { send_email } from "../utils/sendEmail";
+import logger from "../../utils/serverTools/logger";
+import { send_email } from "../../utils/serverTools/sendEmail";
 import { consumeQueue } from "./consumer";
 
 export const startConsumers = () => {

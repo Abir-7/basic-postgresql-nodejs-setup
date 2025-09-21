@@ -2,6 +2,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import jwt from "jsonwebtoken";
 import { IAuthData } from "../../middlewares/auth/auth.interface";
+import { jwtDecode } from "jwt-decode";
 
 const verifyJwt = (token: string, secret: string) => {
   try {
@@ -21,8 +22,17 @@ const generateToken = (payload: object, secret: string, expiresIn: any) => {
     throw new Error(error);
   }
 };
+const decodeToken = (token: string) => {
+  try {
+    const decoded = jwtDecode(token);
+    return decoded;
+  } catch (error: any) {
+    throw new Error(error);
+  }
+};
 
 export const jsonWebToken = {
   verifyJwt,
   generateToken,
+  decodeToken,
 };

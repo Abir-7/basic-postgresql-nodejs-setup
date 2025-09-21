@@ -7,7 +7,7 @@ import { jsonWebToken } from "../../utils/jwt/jwt";
 import { appConfig } from "../../config";
 
 import { eq } from "drizzle-orm";
-import { db } from "../../db/db";
+import { db } from "../../db";
 import { User } from "../../db/schema/user.schema";
 import { UserProfile } from "../../db/schema/userProfile.schema";
 import { UserAuthentication } from "../../db/schema/user.authentication";

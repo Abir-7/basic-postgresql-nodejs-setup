@@ -1,8 +1,8 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/explicit-module-boundary-types */
 import amqplib, { Channel } from "amqplib";
-import logger from "../utils/logger";
-import { appConfig } from "../config";
+import { appConfig } from "../../config";
+import logger from "../../utils/serverTools/logger";
 
 const uri = appConfig.rabbit_mq.url as string;
 let connection: any = null;

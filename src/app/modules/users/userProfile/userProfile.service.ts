@@ -2,12 +2,12 @@ import status from "http-status";
 
 import AppError from "../../../errors/AppError";
 import { removeFalsyFields } from "../../../utils/helper/removeFalsyField";
-import unlinkFile from "../../../utils/unlinkFiles";
+import unlinkFile from "../../../middlewares/fileUpload/unlinkFiles";
 import { getRelativePath } from "../../../middlewares/fileUpload/getRelativeFilePath";
 
 import { eq } from "drizzle-orm";
 import { User } from "../../../db/schema/user.schema";
-import { db } from "../../../db/db";
+import { db } from "../../../db";
 import { UserProfile } from "../../../db/schema/userProfile.schema";
 
 const updateProfileImage = async (path: string, email: string) => {

@@ -1,13 +1,14 @@
-import { startConsumers } from "./app/rabbitMq/worker";
 /* eslint-disable no-console */
 
 import server from "./app";
 import { appConfig } from "./app/config";
-import { pool } from "./app/db/db";
+import { pool } from "./app/db";
 
 import { seedAdmin } from "./app/db/seedAdmin";
+import { startConsumers } from "./app/lib/rabbitMq/worker";
+import redis from "./app/lib/redis/redis";
 
-import logger from "./app/utils/logger";
+import logger from "./app/utils/serverTools/logger";
 
 process.on("uncaughtException", (err) => {
   logger.error("Uncaught exception:", err);
@@ -31,6 +32,7 @@ const main = async () => {
 
   await seedAdmin();
   startConsumers();
+  redis.ping().then(() => console.log("Redis ping OK"));
   server.listen(
     Number(appConfig.server.port),
     appConfig.server.ip as string,
@@ -44,3 +46,6 @@ const main = async () => {
   );
 };
 main().catch((err) => logger.error("Error connecting to Postgres:", err));
+function runLoadTest() {
+  throw new Error("Function not implemented.");
+}

@@ -3,7 +3,7 @@ import multer, { FileFilterCallback } from "multer";
 import path from "path";
 import fs from "fs";
 import { appConfig } from "../../config";
-import logger from "../../utils/logger";
+import logger from "../../utils/serverTools/logger";
 
 // Allow only these file types
 const allowedMimeTypes = [

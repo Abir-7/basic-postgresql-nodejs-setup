@@ -1,12 +1,12 @@
 import { eq } from "drizzle-orm";
 import { TUserRole, userRoles } from "../middlewares/auth/auth.interface";
 import get_hashed_password from "../utils/helper/getHashedPassword";
-import { db } from "./db";
+import { db } from ".";
 import { UserAuthentication } from "./schema/user.authentication";
 import { User } from "./schema/user.schema";
 import { UserProfile } from "./schema/userProfile.schema";
 import { appConfig } from "../config";
-import logger from "../utils/logger";
+import logger from "../utils/serverTools/logger";
 
 export async function seedAdmin() {
   const adminEmail = appConfig.admin.email as string;

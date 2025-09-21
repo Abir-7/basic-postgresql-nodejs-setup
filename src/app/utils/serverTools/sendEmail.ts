@@ -4,10 +4,9 @@
 import nodemailer from "nodemailer";
 
 import HttpStatus from "http-status";
-
-import AppError from "../errors/AppError";
-import { appConfig } from "../config";
+import { appConfig } from "../../config";
 import logger from "./logger";
+import AppError from "../../errors/AppError";
 
 export async function send_email(email: string, subject: string, text: string) {
   try {

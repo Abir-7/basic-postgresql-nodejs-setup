@@ -1,24 +1,34 @@
-import { pgTable } from "drizzle-orm/pg-core";
-import * as t from "drizzle-orm/pg-core";
+import {
+  pgTable,
+  uuid,
+  varchar,
+  timestamp,
+  uniqueIndex,
+} from "drizzle-orm/pg-core";
+import { relations } from "drizzle-orm";
 import { User } from "./user.schema";
 
 export const UserAuthentication = pgTable(
-  "user_authentications",
+  "user_authentication",
   {
-    id: t.uuid().primaryKey().defaultRandom(),
-
-    exp_date: t.timestamp(), // nullable timestamp
-
-    otp: t.varchar(), // nullable bigint
-
-    token: t.varchar(), // nullable varchar
-
-    user_id: t
-      .uuid()
+    id: uuid("id").primaryKey().defaultRandom(),
+    exp_date: timestamp("exp_date"), // nullable
+    otp: varchar("otp"), // nullable
+    token: varchar("token"), // nullable
+    user_id: uuid("user_id")
       .notNull()
+      .unique() // ensures one-to-one
       .references(() => User.id, { onDelete: "cascade" }),
   },
-  (table) => [
-    t.uniqueIndex("user_authentication_user_id_idx").on(table.user_id),
-  ]
+  (table) => [uniqueIndex("user_authentication_user_id_idx").on(table.user_id)]
+);
+
+export const UserAuthenticationRelations = relations(
+  UserAuthentication,
+  ({ one }) => ({
+    user: one(User, {
+      fields: [UserAuthentication.user_id], // FK on this table
+      references: [User.id], // PK on User
+    }),
+  })
 );

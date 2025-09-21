@@ -1,6 +1,6 @@
 import status from "http-status";
-import catchAsync from "../../../utils/catchAsync";
-import sendResponse from "../../../utils/sendResponse";
+import catchAsync from "../../../utils/serverTools/catchAsync";
+import sendResponse from "../../../utils/serverTools/sendResponse";
 import { UserProfileService } from "./userProfile.service";
 
 const updateProfileImage = catchAsync(async (req, res) => {

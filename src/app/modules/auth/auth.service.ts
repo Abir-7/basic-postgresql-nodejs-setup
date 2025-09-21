@@ -10,12 +10,12 @@ import { jsonWebToken } from "../../utils/jwt/jwt";
 import { appConfig } from "../../config";
 
 import { eq, and } from "drizzle-orm";
-import { db } from "../../db/db";
+import { db } from "../../db";
 
-import { publishJob } from "../../rabbitMq/publisher";
 import { User } from "../../db/schema/user.schema";
 import { UserProfile } from "../../db/schema/userProfile.schema";
 import { UserAuthentication } from "../../db/schema/user.authentication";
+import { publishJob } from "../../lib/rabbitMq/publisher";
 
 // Create user
 const createUser = async (data: {
@@ -28,7 +28,28 @@ const createUser = async (data: {
   const expDate = getExpiryTime(5);
 
   return await db.transaction(async (tx) => {
-    // Insert user
+    // 1️⃣ Check if a user with this email exists
+    const [existingUser] = await tx
+      .select()
+      .from(User)
+      .where(eq(User.email, data.email))
+      .limit(1);
+
+    // 2️⃣ If exists and not verified, delete the old user and related data
+    if (existingUser && !existingUser.is_verified) {
+      await tx
+        .delete(UserAuthentication)
+        .where(eq(UserAuthentication.user_id, existingUser.id));
+      await tx
+        .delete(UserProfile)
+        .where(eq(UserProfile.user_id, existingUser.id));
+      await tx.delete(User).where(eq(User.id, existingUser.id));
+    } else if (existingUser) {
+      // If user exists and is verified, stop creation
+      throw new Error("Email already in use.");
+    }
+
+    // 3️⃣ Insert new user
     const [createdUser] = await tx
       .insert(User)
       .values({
@@ -37,30 +58,29 @@ const createUser = async (data: {
       })
       .returning({ id: User.id, email: User.email });
 
-    // Insert profile
+    // 4️⃣ Insert profile
     await tx.insert(UserProfile).values({
       user_id: createdUser.id,
       full_name: data.fullName,
     });
 
-    // Insert authentication
+    // 5️⃣ Insert authentication
     await tx.insert(UserAuthentication).values({
       user_id: createdUser.id,
       otp,
       exp_date: expDate,
     });
 
-    // Send OTP email (using job)
+    // 6️⃣ Send OTP email (using job)
     await publishJob("email_queue", {
       to: data.email,
       subject: "Email Verification Code",
-      body: otp.toString(),
+      body: otp,
     });
 
     return {
       ...createdUser,
       password: null,
-      authentication: {},
     };
   });
 };
@@ -165,31 +185,39 @@ const verifyUser = async (email: string, otp: string) => {
 };
 
 const resendCode = async (email: string) => {
-  const [user] = await db.select().from(User).where(eq(User.email, email));
+  // 1️⃣ Fetch user with authentication using LEFT JOIN
+  const [result] = await db
+    .select({
+      user: User,
+      auth: UserAuthentication,
+    })
+    .from(User)
+    .leftJoin(UserAuthentication, eq(User.id, UserAuthentication.user_id))
+    .where(eq(User.email, email));
 
-  if (!user) {
-    throw new AppError(status.BAD_REQUEST, "User not found.");
-  }
+  if (!result?.user) throw new AppError(status.BAD_REQUEST, "User not found.");
 
-  const [auth] = await db
-    .select()
-    .from(UserAuthentication)
-    .where(eq(UserAuthentication.user_id, user.id));
+  console.log(result);
+
+  const auth = result.auth;
 
   if (!auth) {
     throw new AppError(status.BAD_REQUEST, "User auth record not found.");
   }
 
-  if (!isExpired(auth.exp_date)) {
+  // 2️⃣ Check if previous OTP exists and is not expired
+  if (auth.otp && auth.exp_date && !isExpired(auth.exp_date)) {
     throw new AppError(
       status.BAD_REQUEST,
       "Use your previous code. Code is still valid."
     );
   }
 
+  // 3️⃣ Generate new OTP and expiry
   const otp = getOtp(5).toString();
   const expDate = getExpiryTime(5);
 
+  // 4️⃣ Update authentication
   await db.transaction(async (tx) => {
     await tx
       .update(UserAuthentication)
@@ -197,16 +225,31 @@ const resendCode = async (email: string) => {
       .where(eq(UserAuthentication.id, auth.id));
   });
 
+  // 5️⃣ Send OTP via email
   await publishJob("email_queue", {
     to: email,
     subject: "Email Verification Code",
-    body: otp.toString(),
+    body: `Your verification code is: ${otp}`,
   });
 
-  return { message: "Code sent" };
+  return { message: "New OTP sent successfully" };
 };
 
-const forgotPasswordRequest = async (email: string) => {};
+const forgotPasswordRequest = async (user_id: string) => {
+  const profile = await db.query.User.findFirst({
+    where: (p) => eq(p.id, user_id),
+    with: {
+      profile: true,
+    },
+  });
+
+  if (!profile) {
+    throw new Error("Profile not found");
+  }
+
+  return profile;
+};
+
 const resetPassword = async (
   token: string,
   userData: {

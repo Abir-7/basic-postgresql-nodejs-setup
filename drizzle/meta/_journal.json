@@ -15,6 +15,48 @@
       "when": 1758393531358,
       "tag": "0001_broken_donald_blake",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1758437596782,
+      "tag": "0002_slim_beast",
+      "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1758441396958,
+      "tag": "0003_pink_fat_cobra",
+      "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1758447319755,
+      "tag": "0004_cool_lester",
+      "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "7",
+      "when": 1758448353575,
+      "tag": "0005_flashy_odin",
+      "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1758448749490,
+      "tag": "0006_giant_wong",
+      "breakpoints": true
+    },
+    {
+      "idx": 7,
+      "version": "7",
+      "when": 1758451310510,
+      "tag": "0007_slippery_chameleon",
+      "breakpoints": true
     }
   ]
 }

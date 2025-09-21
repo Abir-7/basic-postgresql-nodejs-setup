@@ -1,0 +1,26 @@
+// Make sure to install the 'pg' package
+
+import { drizzle } from "drizzle-orm/node-postgres";
+import { Pool } from "pg";
+import { appConfig } from "../config";
+import { User, UserRelations } from "./schema/user.schema";
+import { UserProfile, UserProfileRelations } from "./schema/userProfile.schema";
+import {
+  UserAuthentication,
+  UserAuthenticationRelations,
+} from "./schema/user.authentication";
+
+export const pool = new Pool({
+  connectionString: appConfig.database.dataBase_uri,
+});
+export const db = drizzle(pool, {
+  schema: {
+    User,
+    UserProfile,
+    UserAuthentication,
+    //-------------------//
+    UserProfileRelations,
+    UserRelations,
+    UserAuthenticationRelations,
+  },
+});

@@ -5,7 +5,7 @@ import http from "http";
 import path from "path";
 import cookieParser from "cookie-parser";
 import { globalErrorHandler } from "./app/middlewares/globalErrorHandler";
-import { noRouteFound } from "./app/utils/noRouteFound";
+import { noRouteFound } from "./app/utils/serverTools/noRouteFound";
 const app = express();
 
 const corsOption = {

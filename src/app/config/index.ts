@@ -21,7 +21,10 @@ export const appConfig = {
   rabbit_mq: {
     url: process.env.RABBITMQ_URL,
   },
-
+  redis: {
+    host: process.env.REDIS_HOST,
+    port: parseInt(process.env.REDIS_PORT as string),
+  },
   jwt: {
     jwt_access_secret: process.env.JWT_ACCESS_SECRET,
     jwt_access_exprire: process.env.JWT_ACCESS_EXPIRE,
@@ -45,5 +48,8 @@ export const appConfig = {
   admin: {
     email: process.env.ADMIN_EMAIL,
     password: process.env.ADMIN_PASSWORD,
+  },
+  encrypt: {
+    s_key: process.env.ENCRYPTION_SECRET_KEY,
   },
 };

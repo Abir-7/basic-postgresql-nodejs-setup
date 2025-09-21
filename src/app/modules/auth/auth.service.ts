@@ -388,20 +388,23 @@ const updatePassword = async (
   }
 ) => {
   const { confirm_password, old_password, new_password } = passData;
+
   const [userData] = await db
     .select({ user_id: User.id, password: User.password })
     .from(User)
     .where(eq(User.id, userId));
+
   if (!userData) {
-    throw new AppError(404, "User not found");
+    throw new AppError(404, "User not found.");
   }
 
   const isMatch = await comparePassword(old_password, userData.password);
   if (!isMatch) {
     throw new AppError(400, "Old password not matched.");
   }
+
   if (new_password !== confirm_password) {
-    throw new AppError(500, "Password not matched");
+    throw new AppError(400, "Passwords do not match.");
   }
 
   const hashedPassword = await getHashedPassword(new_password);

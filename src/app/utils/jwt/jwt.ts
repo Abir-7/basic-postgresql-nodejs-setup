@@ -24,7 +24,7 @@ const generateToken = (payload: IAuthData, secret: string, expiresIn: any) => {
 };
 const decodeToken = (token: string) => {
   try {
-    const decoded = jwtDecode(token);
+    const decoded = jwtDecode(token) as IAuthData;
     return decoded;
   } catch (error: any) {
     throw new Error(error);

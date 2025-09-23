@@ -27,9 +27,9 @@ export const app_config = {
   },
   jwt: {
     jwt_access_secret: process.env.JWT_ACCESS_SECRET,
-    jwt_access_exprire: process.env.JWT_ACCESS_EXPIRE,
+    jwt_access_expire: process.env.JWT_ACCESS_EXPIRE,
     jwt_refresh_secret: process.env.JWT_REFRESH_SECRET,
-    jwt_refresh_exprire: process.env.JWT_REFRESH_EXPIRE,
+    jwt_refresh_expire: process.env.JWT_REFRESH_EXPIRE,
   },
   bcrypt: {
     salt_round: process.env.SALT_ROUND,

@@ -17,6 +17,8 @@ import { User } from "../../db/schema/user.schema";
 
 import { UserAuthentication } from "../../db/schema/user.authentication";
 import { publishJob } from "../../lib/rabbitMq/publisher";
+import { UserProfile } from "../../db/schema/userProfile.schema";
+import { IAuthData, TUserRole } from "../../middlewares/auth/auth.interface";
 
 // Create user
 const createUser = async (data: {
@@ -114,19 +116,19 @@ const userLogin = async (login_data: { email: string; password: string }) => {
   if (user_data.is_deleted)
     throw new AppError(status.UNAUTHORIZED, "Account deleted.");
 
-  const tokenData = {
+  const token_data = {
     user_role: user_data.role,
     user_email: user_data.email,
     user_id: user_data.id,
   };
 
   const access_token = jsonWebToken.generateToken(
-    tokenData as IAuthData,
+    token_data as IAuthData,
     app_config.jwt.jwt_access_secret as string,
     app_config.jwt.jwt_access_expire
   );
   const refresh_token = jsonWebToken.generateToken(
-    tokenData as IAuthData,
+    token_data as IAuthData,
     app_config.jwt.jwt_refresh_secret as string,
     app_config.jwt.jwt_refresh_expire
   );

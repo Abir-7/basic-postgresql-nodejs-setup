@@ -10,6 +10,8 @@ import {
 import { relations } from "drizzle-orm";
 import { User } from "./user.schema";
 
+import { InferInsertModel, InferSelectModel } from "drizzle-orm";
+
 export const UserProfile = pgTable(
   "user_profile",
   {
@@ -36,3 +38,6 @@ export const UserProfileRelations = relations(UserProfile, ({ one }) => ({
     references: [User.id], // PK on User
   }),
 }));
+
+export type UserProfileInsert = InferInsertModel<typeof UserProfile>;
+export type UserProfileSelect = InferSelectModel<typeof UserProfile>;

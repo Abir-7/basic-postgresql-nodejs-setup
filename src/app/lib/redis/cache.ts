@@ -5,7 +5,7 @@ import redis from "./redis";
 
 const DEFAULT_TTL = 60; // 1 min
 
-export const set_cache = async (
+export const setCache = async (
   key: string,
   value: unknown,
   ttl: number = DEFAULT_TTL
@@ -21,7 +21,7 @@ export const set_cache = async (
 /**
  * Get value from Redis cache
  */
-export const get_cache = async <T>(key: string): Promise<T | null> => {
+export const getCache = async <T>(key: string): Promise<T | null> => {
   try {
     const data = await redis.get(key);
     if (!data) {
@@ -36,7 +36,7 @@ export const get_cache = async <T>(key: string): Promise<T | null> => {
   }
 };
 
-export const delete_cache = async (key: string) => {
+export const deleteCache = async (key: string) => {
   try {
     await redis.del(key);
     logger.debug(`Cache deleted: ${key}`);
@@ -48,7 +48,7 @@ export const delete_cache = async (key: string) => {
 /**
  * ❌ Delete multiple cache keys
  */
-export const delete_caches = async (keys: string[]) => {
+export const deleteCaches = async (keys: string[]) => {
   try {
     if (keys.length === 0) return;
     await redis.del(keys);

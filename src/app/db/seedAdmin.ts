@@ -1,15 +1,17 @@
 import { eq } from "drizzle-orm";
-import { TUserRole, userRoles } from "../middlewares/auth/auth.interface";
+import { TUserRole, user_roles } from "../middlewares/auth/auth.interface";
 import get_hashed_password from "../utils/helper/getHashedPassword";
 import { db } from ".";
-import { UserAuthentication } from "./schema/user.authentication";
+
 import { User } from "./schema/user.schema";
-import { UserProfile } from "./schema/userProfile.schema";
-import { appConfig } from "../config";
+
+import { app_config } from "../config";
 import logger from "../utils/serverTools/logger";
+import { UserProfile } from "./schema/userProfile.schema";
+import { UserAuthentication } from "./schema/user.authentication";
 
 export async function seedAdmin() {
-  const adminEmail = appConfig.admin.email as string;
+  const adminEmail = app_config.admin.email as string;
   const adminRole: TUserRole = "SUPERADMIN";
 
   // Check if admin user exists
@@ -26,7 +28,7 @@ export async function seedAdmin() {
 
   // Hash password
   const hashedPassword = await get_hashed_password(
-    appConfig.admin.password as string
+    app_config.admin.password as string
   );
 
   // Run all inserts in a transaction

@@ -3,7 +3,7 @@ import path from "path";
 
 dotenv.config({ path: path.join(process.cwd(), ".env") });
 
-export const appConfig = {
+export const app_config = {
   database: {
     // type: process.env.DB_TYPE,
     // host: process.env.DB_HOST,

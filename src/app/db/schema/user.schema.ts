@@ -8,12 +8,12 @@ import {
   boolean,
 } from "drizzle-orm/pg-core";
 
-import { userRoles } from "../../middlewares/auth/auth.interface";
+import { user_roles } from "../../middlewares/auth/auth.interface";
 import { UserProfile } from "./userProfile.schema";
 import { relations } from "drizzle-orm";
 import { UserAuthentication } from "./user.authentication";
 
-export const rolesEnum = pgEnum("roles", userRoles);
+export const rolesEnum = pgEnum("roles", user_roles);
 
 export const User = pgTable(
   "user",

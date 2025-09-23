@@ -11,8 +11,9 @@ import { ZodError } from "zod";
 import multer from "multer";
 import multerErrorHandler from "../errors/MulterErrorHandler";
 import logger from "../utils/serverTools/logger";
-import { DrizzleQueryError } from "drizzle-orm/errors";
+
 import { drizzleErrorHandler } from "../errors/drizzleErrorHandler";
+import { DrizzleQueryError } from "drizzle-orm/errors";
 
 export const globalErrorHandler = async (
   err: any,
@@ -20,13 +21,13 @@ export const globalErrorHandler = async (
   res: Response,
   next: NextFunction
 ) => {
-  let statusCode = err.statusCode || 500;
+  let status_code = err.statusCode || 500;
   let message = err.message || "Something went wrong!";
   let errors: any = [];
 
   if (err instanceof ZodError) {
     const zodError = handleZodError(err);
-    statusCode = zodError.statusCode;
+    status_code = zodError.statusCode;
     message = zodError.message;
     errors = zodError.errors;
   }
@@ -34,11 +35,11 @@ export const globalErrorHandler = async (
   if (err instanceof DrizzleQueryError) {
     console.log(err.message);
     const zodError = drizzleErrorHandler(err.cause);
-    statusCode = zodError.statusCode;
+    status_code = zodError.statusCode;
     message = zodError.message;
     errors = zodError.errors;
   } else if (err?.name === "TokenExpiredError") {
-    statusCode = 401;
+    status_code = 401;
     message = "Your session has expired. Please login again.";
     errors = [
       {
@@ -48,11 +49,11 @@ export const globalErrorHandler = async (
     ];
   } else if (err instanceof multer.MulterError) {
     const multerError = multerErrorHandler(err);
-    statusCode = multerError.statusCode;
+    status_code = multerError.statusCode;
     message = multerError.message;
     errors = multerError.errors;
   } else if (err instanceof AppError) {
-    statusCode = err.statusCode;
+    status_code = err.statusCode;
     message = err.message;
     errors = [
       {
@@ -71,9 +72,9 @@ export const globalErrorHandler = async (
   }
   logger.error(message);
 
-  res.status(statusCode).json({
+  res.status(status_code).json({
     success: false,
-    status: statusCode,
+    statusCode: status_code,
     message,
     errors: errors.length ? errors : undefined,
     ...(process.env.NODE_ENV === "development" && { stack: err.stack }),

@@ -1,10 +1,10 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/explicit-module-boundary-types */
 import amqplib, { Channel } from "amqplib";
-import { appConfig } from "../../config";
+import { app_config } from "../../config";
 import logger from "../../utils/serverTools/logger";
 
-const uri = appConfig.rabbit_mq.url as string;
+const uri = app_config.rabbit_mq.url as string;
 let connection: any = null;
 export const getChannel = async (): Promise<Channel> => {
   try {

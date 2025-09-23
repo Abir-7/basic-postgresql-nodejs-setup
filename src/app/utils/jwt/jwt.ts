@@ -12,7 +12,7 @@ const verifyJwt = (token: string, secret: string) => {
   }
 };
 
-const generateToken = (payload: object, secret: string, expiresIn: any) => {
+const generateToken = (payload: IAuthData, secret: string, expiresIn: any) => {
   try {
     const token = jwt.sign(payload, secret, {
       expiresIn,

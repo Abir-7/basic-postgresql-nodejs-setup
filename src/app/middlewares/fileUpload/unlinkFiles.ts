@@ -2,10 +2,10 @@ import fs from "fs";
 import path from "path";
 
 const unlinkFile = (file: string) => {
-  const filePath = path.join("uploads", file);
+  const file_path = path.join("uploads", file);
 
-  if (fs.existsSync(filePath)) {
-    fs.unlinkSync(filePath);
+  if (fs.existsSync(file_path)) {
+    fs.unlinkSync(file_path);
   }
 };
 

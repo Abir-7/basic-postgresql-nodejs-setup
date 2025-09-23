@@ -8,68 +8,70 @@ import getOtp from "../../utils/helper/getOtp";
 
 import getHashedPassword from "../../utils/helper/getHashedPassword";
 import { jsonWebToken } from "../../utils/jwt/jwt";
-import { appConfig } from "../../config";
+import { app_config } from "../../config";
 
 import { eq, and } from "drizzle-orm";
 import { db } from "../../db";
 
 import { User } from "../../db/schema/user.schema";
-import { UserProfile } from "../../db/schema/userProfile.schema";
+
 import { UserAuthentication } from "../../db/schema/user.authentication";
 import { publishJob } from "../../lib/rabbitMq/publisher";
+import { UserProfile } from "../../db/schema/userProfile.schema";
+import { IAuthData } from "../../middlewares/auth/auth.interface";
 
 // Create user
 const createUser = async (data: {
   email: string;
-  fullName: string;
+  full_name: string;
   password: string;
 }) => {
-  const hashedPassword = await getHashedPassword(data.password);
+  const hashed_password = await getHashedPassword(data.password);
   const otp = getOtp(5).toString();
-  const expDate = getExpiryTime(5);
+  const exp_date = getExpiryTime(5);
 
   return await db.transaction(async (tx) => {
     // 1️⃣ Check if a user with this email exists
-    const [existingUser] = await tx
+    const [existing_user] = await tx
       .select()
       .from(User)
       .where(eq(User.email, data.email))
       .limit(1);
 
     // 2️⃣ If exists and not verified, delete the old user and related data
-    if (existingUser && !existingUser.is_verified) {
+    if (existing_user && !existing_user.is_verified) {
       await tx
         .delete(UserAuthentication)
-        .where(eq(UserAuthentication.user_id, existingUser.id));
+        .where(eq(UserAuthentication.user_id, existing_user.id));
       await tx
         .delete(UserProfile)
-        .where(eq(UserProfile.user_id, existingUser.id));
-      await tx.delete(User).where(eq(User.id, existingUser.id));
-    } else if (existingUser) {
+        .where(eq(UserProfile.user_id, existing_user.id));
+      await tx.delete(User).where(eq(User.id, existing_user.id));
+    } else if (existing_user) {
       // If user exists and is verified, stop creation
       throw new Error("Email already in use.");
     }
 
     // 3️⃣ Insert new user
-    const [createdUser] = await tx
+    const [created_user] = await tx
       .insert(User)
       .values({
         email: data.email,
-        password: hashedPassword,
+        password: hashed_password,
       })
       .returning({ id: User.id, email: User.email });
 
     // 4️⃣ Insert profile
     await tx.insert(UserProfile).values({
-      user_id: createdUser.id,
-      full_name: data.fullName,
+      user_id: created_user.id,
+      full_name: data.full_name,
     });
 
     // 5️⃣ Insert authentication
     await tx.insert(UserAuthentication).values({
-      user_id: createdUser.id,
+      user_id: created_user.id,
       otp,
-      exp_date: expDate,
+      exp_date: exp_date,
     });
 
     // 6️⃣ Send OTP email (using job)
@@ -80,60 +82,62 @@ const createUser = async (data: {
     });
 
     return {
-      ...createdUser,
+      ...created_user,
       password: null,
     };
   });
 };
 
 // User login
-const userLogin = async (loginData: { email: string; password: string }) => {
-  const [userData] = await db
+const userLogin = async (login_data: { email: string; password: string }) => {
+  const [user_data] = await db
     .select({
       id: User.id,
       email: User.email,
       password: User.password,
       role: User.role,
-      isVerified: User.is_verified,
-      isBlocked: User.is_blocked,
-      isDeleted: User.is_deleted,
+      is_verified: User.is_verified,
+      is_blocked: User.is_blocked,
+      is_deleted: User.is_deleted,
     })
     .from(User)
-    .where(eq(User.email, loginData.email))
+    .where(eq(User.email, login_data.email))
     .limit(1);
 
-  if (!userData)
+  if (!user_data)
     throw new AppError(status.UNAUTHORIZED, "Invalid credentials: email");
-  if (!(await comparePassword(loginData.password, userData.password as string)))
+  if (
+    !(await comparePassword(login_data.password, user_data.password as string))
+  )
     throw new AppError(status.UNAUTHORIZED, "Invalid credentials: password");
-  if (!userData.isVerified)
+  if (!user_data.is_verified)
     throw new AppError(status.UNAUTHORIZED, "You are not verified.");
-  if (userData.isBlocked)
+  if (user_data.is_blocked)
     throw new AppError(status.UNAUTHORIZED, "You are blocked.");
-  if (userData.isDeleted)
+  if (user_data.is_deleted)
     throw new AppError(status.UNAUTHORIZED, "Account deleted.");
 
   const tokenData = {
-    userRole: userData.role,
-    userEmail: userData.email,
-    userId: userData.id,
+    user_role: user_data.role,
+    user_email: user_data.email,
+    user_id: user_data.id,
   };
 
-  const accessToken = jsonWebToken.generateToken(
-    tokenData,
-    appConfig.jwt.jwt_access_secret as string,
-    appConfig.jwt.jwt_access_exprire
+  const access_token = jsonWebToken.generateToken(
+    tokenData as IAuthData,
+    app_config.jwt.jwt_access_secret as string,
+    app_config.jwt.jwt_access_exprire
   );
-  const refreshToken = jsonWebToken.generateToken(
-    tokenData,
-    appConfig.jwt.jwt_refresh_secret as string,
-    appConfig.jwt.jwt_refresh_exprire
+  const refresh_token = jsonWebToken.generateToken(
+    tokenData as IAuthData,
+    app_config.jwt.jwt_refresh_secret as string,
+    app_config.jwt.jwt_refresh_exprire
   );
 
   return {
-    userData: { ...userData, password: undefined },
-    accessToken,
-    refreshToken,
+    user_data: { ...user_data, password: undefined },
+    access_token,
+    refresh_token,
   };
 };
 
@@ -216,13 +220,13 @@ const resendCode = async (email: string) => {
 
   // 3️⃣ Generate new OTP and expiry
   const otp = getOtp(5).toString();
-  const expDate = getExpiryTime(5);
+  const exp_date = getExpiryTime(5);
 
   // 4️⃣ Update authentication
   await db.transaction(async (tx) => {
     await tx
       .update(UserAuthentication)
-      .set({ otp, exp_date: expDate })
+      .set({ otp, exp_date: exp_date })
       .where(eq(UserAuthentication.id, auth.id));
   });
 
@@ -237,7 +241,7 @@ const resendCode = async (email: string) => {
 };
 
 const forgotPasswordRequest = async (email: string) => {
-  const expiresAt = getExpiryTime(10);
+  const expires_at = getExpiryTime(10);
   const otp = getOtp(4);
   const [profile] = await db
     .select({
@@ -254,7 +258,7 @@ const forgotPasswordRequest = async (email: string) => {
 
   const newAuthData = {
     otp: otp.toString(),
-    exp_date: expiresAt,
+    exp_date: expires_at,
     need_to_reset_pass: false,
     token: null,
   };

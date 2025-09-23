@@ -2,7 +2,7 @@
 
 import { drizzle } from "drizzle-orm/node-postgres";
 import { Pool } from "pg";
-import { appConfig } from "../config";
+import { app_config } from "../config";
 import { User, UserRelations } from "./schema/user.schema";
 import { UserProfile, UserProfileRelations } from "./schema/userProfile.schema";
 import {
@@ -11,7 +11,7 @@ import {
 } from "./schema/user.authentication";
 
 export const pool = new Pool({
-  connectionString: appConfig.database.dataBase_uri,
+  connectionString: app_config.database.dataBase_uri,
 });
 export const db = drizzle(pool, {
   schema: {

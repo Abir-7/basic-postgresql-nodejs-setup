@@ -2,11 +2,11 @@ import { Request } from "express";
 import multer, { FileFilterCallback } from "multer";
 import path from "path";
 import fs from "fs";
-import { appConfig } from "../../config";
+import { app_config } from "../../config";
 import logger from "../../utils/serverTools/logger";
 
 // Allow only these file types
-const allowedMimeTypes = [
+const allowed_mime_types = [
   // Images
   "image/jpeg",
   "image/png",
@@ -76,13 +76,13 @@ const storage = multer.diskStorage({
 });
 
 // File type filter
-const fileFilter = (
+const file_filter = (
   req: Request,
   file: Express.Multer.File,
   cb: FileFilterCallback
 ) => {
   logger.info(`Uploading:${(file.originalname, file.mimetype)}`);
-  if (allowedMimeTypes.includes(file.mimetype)) {
+  if (allowed_mime_types.includes(file.mimetype)) {
     cb(null, true);
   } else {
     cb(new Error(`❌ Unsupported file type: ${file.mimetype}`));
@@ -92,9 +92,9 @@ const fileFilter = (
 // Export multer instance
 export const upload = multer({
   storage,
-  fileFilter,
+  fileFilter: file_filter,
   limits: {
-    fileSize: Number(appConfig.multer.file_size_limit) || 100 * 1024 * 1024, // 100MB default
-    files: Number(appConfig.multer.max_file_number) || 5,
+    fileSize: Number(app_config.multer.file_size_limit) || 100 * 1024 * 1024, // 100MB default
+    files: Number(app_config.multer.max_file_number) || 5,
   },
 });

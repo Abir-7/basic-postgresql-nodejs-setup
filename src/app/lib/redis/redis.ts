@@ -1,11 +1,11 @@
 import Redis from "ioredis";
 
-import { appConfig } from "../../config";
+import { app_config } from "../../config";
 import logger from "../../utils/serverTools/logger";
 
 const redis = new Redis({
-  host: appConfig.redis.host,
-  port: Number(appConfig.redis.port),
+  host: app_config.redis.host,
+  port: Number(app_config.redis.port),
   retryStrategy(times) {
     const delay = Math.min(times * 50, 2000);
     return delay; // reconnect delay in ms

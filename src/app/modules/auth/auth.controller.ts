@@ -3,11 +3,11 @@ import status from "http-status";
 import catchAsync from "../../utils/serverTools/catchAsync";
 import sendResponse from "../../utils/serverTools/sendResponse";
 import { AuthService } from "./auth.service";
-import { appConfig } from "../../config";
+import { app_config } from "../../config";
 
 const createUser = catchAsync(async (req, res) => {
-  const userData = req.body;
-  const result = await AuthService.createUser(userData);
+  const user_data = req.body;
+  const result = await AuthService.createUser(user_data);
 
   sendResponse(res, {
     success: true,
@@ -20,7 +20,7 @@ const createUser = catchAsync(async (req, res) => {
 const userLogin = catchAsync(async (req, res, next) => {
   const result = await AuthService.userLogin(req.body);
 
-  res.cookie("refreshToken", result.refreshToken, {
+  res.cookie("refresh_token", result.refresh_token, {
     httpOnly: true,
     secure: process.env.NODE_ENV === "production",
     //sameSite: "strict",
@@ -71,8 +71,8 @@ const resendCode = catchAsync(async (req, res, next) => {
 });
 
 const resetPassword = catchAsync(async (req, res, next) => {
-  const tokenWithBearer = req.headers.authorization as string;
-  const token = tokenWithBearer.split(" ")[1];
+  const token_with_bearer = req.headers.authorization as string;
+  const token = token_with_bearer.split(" ")[1];
 
   const result = await AuthService.resetPassword(token as string, req.body);
 
@@ -85,8 +85,8 @@ const resetPassword = catchAsync(async (req, res, next) => {
 });
 
 const getNewAccessToken = catchAsync(async (req, res) => {
-  const refreshToken = req.cookies.refreshToken;
-  const result = await AuthService.getNewAccessToken(refreshToken);
+  const refresh_token = req.cookies.refresh_token;
+  const result = await AuthService.getNewAccessToken(refresh_token);
   sendResponse(res, {
     data: result,
     success: true,
@@ -96,9 +96,9 @@ const getNewAccessToken = catchAsync(async (req, res) => {
 });
 
 const updatePassword = catchAsync(async (req, res) => {
-  const { userId } = req.user;
+  const { user_id } = req.user;
 
-  const result = await AuthService.updatePassword(userId, req.body);
+  const result = await AuthService.updatePassword(user_id, req.body);
   sendResponse(res, {
     data: result,
     success: true,

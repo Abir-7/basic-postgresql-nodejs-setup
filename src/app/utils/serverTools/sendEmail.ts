@@ -4,24 +4,24 @@
 import nodemailer from "nodemailer";
 
 import HttpStatus from "http-status";
-import { appConfig } from "../../config";
+import { app_config } from "../../config";
 import logger from "./logger";
 import AppError from "../../errors/AppError";
 
 export async function send_email(email: string, subject: string, text: string) {
   try {
     const transporter = nodemailer.createTransport({
-      host: appConfig.email.host,
-      port: Number(appConfig.email.port),
+      host: app_config.email.host,
+      port: Number(app_config.email.port),
       secure: false,
       auth: {
-        user: appConfig.email.user,
-        pass: appConfig.email.pass,
+        user: app_config.email.user,
+        pass: app_config.email.pass,
       },
     });
 
     const info = await transporter.sendMail({
-      from: `"AiFinanceHub" ${appConfig.email.from}`, // Sender address
+      from: `"AiFinanceHub" ${app_config.email.from}`, // Sender address
       to: email, // Recipient's email
       subject: `${subject}`,
       text: text,

@@ -1,10 +1,10 @@
 /* eslint-disable no-console */
 
 import server from "./app";
-import { appConfig } from "./app/config";
+import { app_config } from "./app/config";
 import { pool } from "./app/db";
-
 import { seedAdmin } from "./app/db/seedAdmin";
+
 import { startConsumers } from "./app/lib/rabbitMq/worker";
 import redis from "./app/lib/redis/redis";
 
@@ -34,18 +34,15 @@ const main = async () => {
   startConsumers();
   redis.ping().then(() => console.log("Redis ping OK"));
   server.listen(
-    Number(appConfig.server.port),
-    appConfig.server.ip as string,
+    Number(app_config.server.port),
+    app_config.server.ip as string,
     () => {
       logger.info(
-        `Example app listening on port ${appConfig.server.port} & ip:${
-          appConfig.server.ip as string
+        `Example app listening on port ${app_config.server.port} & ip:${
+          app_config.server.ip as string
         }`
       );
     }
   );
 };
 main().catch((err) => logger.error("Error connecting to Postgres:", err));
-function runLoadTest() {
-  throw new Error("Function not implemented.");
-}

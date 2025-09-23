@@ -1,10 +1,10 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 export interface IAuthData {
-  userEmail: string;
-  userId: string;
-  userRole: TUserRole;
+  user_email: string;
+  user_id: string;
+  user_role: TUserRole;
 }
 
-export const userRoles = ["SUPERADMIN", "USER"] as const;
+export const user_roles = ["SUPERADMIN", "USER"] as const;
 
-export type TUserRole = (typeof userRoles)[number];
+export type TUserRole = (typeof user_roles)[number];

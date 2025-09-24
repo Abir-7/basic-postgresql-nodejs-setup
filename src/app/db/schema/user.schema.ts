@@ -9,9 +9,10 @@ import {
 } from "drizzle-orm/pg-core";
 
 import { user_roles } from "../../middlewares/auth/auth.interface";
-import { UserProfile } from "./userProfile.schema";
+
 import { relations } from "drizzle-orm";
 import { UserAuthentication } from "./user.authentication";
+import { UserProfile } from "./userProfile.schema";
 
 export const rolesEnum = pgEnum("roles", user_roles);
 
@@ -26,8 +27,8 @@ export const User = pgTable(
     need_to_reset_pass: boolean("need_to_reset_pass").default(false),
     is_blocked: boolean("is_blocked").default(false),
     is_deleted: boolean("is_deleted").default(false),
-    createdAt: timestamp("createdAt").defaultNow().notNull(),
-    updatedAt: timestamp("updatedAt").defaultNow().notNull(),
+    created_at: timestamp("created_at").defaultNow().notNull(),
+    updated_at: timestamp("updated_at").defaultNow().notNull(),
   },
   (table) => [uniqueIndex("email_idx").on(table.email)]
 );

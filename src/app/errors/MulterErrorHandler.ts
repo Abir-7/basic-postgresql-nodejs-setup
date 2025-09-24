@@ -3,7 +3,7 @@
 
 import { app_config } from "../config";
 const multerErrorHandler = (err: any) => {
-  const statusCode = 400;
+  const status_code = 400;
   const message = "Multer Error";
   const errors: { field: string; message: string }[] = [];
   if (err.code === "LIMIT_FILE_SIZE") {
@@ -22,6 +22,6 @@ const multerErrorHandler = (err: any) => {
     });
   }
 
-  return { statusCode, message, errors };
+  return { status_code, message, errors };
 };
 export default multerErrorHandler;

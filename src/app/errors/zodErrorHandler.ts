@@ -3,11 +3,11 @@ import { ZodError } from "zod";
 export const handleZodError = (
   err: ZodError
 ): {
-  statusCode: number;
+  status_code: number;
   message: string;
   errors: { message: string; path: string }[];
 } => {
-  const statusCode = 400;
+  const status_code = 400;
   const message = "Validation failed!";
 
   // Map through Zod error issues and format them
@@ -16,5 +16,5 @@ export const handleZodError = (
     path: e.path.join("."),
   }));
 
-  return { statusCode, message, errors };
+  return { status_code, message, errors };
 };

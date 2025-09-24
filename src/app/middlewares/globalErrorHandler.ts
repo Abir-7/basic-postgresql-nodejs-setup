@@ -26,16 +26,16 @@ export const globalErrorHandler = async (
   let errors: any = [];
 
   if (err instanceof ZodError) {
-    const zodError = handleZodError(err);
-    status_code = zodError.statusCode;
-    message = zodError.message;
-    errors = zodError.errors;
+    const zod_error = handleZodError(err);
+    status_code = zod_error.status_code;
+    message = zod_error.message;
+    errors = zod_error.errors;
   }
 
   if (err instanceof DrizzleQueryError) {
     console.log(err.message);
     const zodError = drizzleErrorHandler(err.cause);
-    status_code = zodError.statusCode;
+    status_code = zodError.status_code;
     message = zodError.message;
     errors = zodError.errors;
   } else if (err?.name === "TokenExpiredError") {
@@ -49,11 +49,11 @@ export const globalErrorHandler = async (
     ];
   } else if (err instanceof multer.MulterError) {
     const multerError = multerErrorHandler(err);
-    status_code = multerError.statusCode;
+    status_code = multerError.status_code;
     message = multerError.message;
     errors = multerError.errors;
   } else if (err instanceof AppError) {
-    status_code = err.statusCode;
+    status_code = err.status_code;
     message = err.message;
     errors = [
       {

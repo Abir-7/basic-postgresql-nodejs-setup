@@ -1,11 +1,6 @@
-/**
- * Checks if the provided expiration date has already passed.
- * @param expDate - The expiration date to compare
- * @returns true if expired, false otherwise
- */
-const isExpired = (expDate: Date | null): boolean => {
-  if (!expDate) return true; // Treat null as expired
-  return new Date() > new Date(expDate);
+const isExpired = (exp_date: Date | null): boolean => {
+  if (!exp_date) return true; // Treat null as expired
+  return new Date() > new Date(exp_date);
 };
 
 export default isExpired;

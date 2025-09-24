@@ -11,14 +11,14 @@ import { UserProfile } from "./schema/userProfile.schema";
 import { UserAuthentication } from "./schema/user.authentication";
 
 export async function seedAdmin() {
-  const adminEmail = app_config.admin.email as string;
-  const adminRole: TUserRole = "SUPERADMIN";
+  const admin_email = app_config.admin.email as string;
+  const admin_role: TUserRole = "SUPERADMIN";
 
   // Check if admin user exists
   const existing_admin = await db
     .select()
     .from(User)
-    .where(eq(User.role, adminRole))
+    .where(eq(User.role, admin_role))
     .limit(1);
 
   if (existing_admin.length > 0) {
@@ -27,7 +27,7 @@ export async function seedAdmin() {
   }
 
   // Hash password
-  const hashedPassword = await get_hashed_password(
+  const hashed_password = await get_hashed_password(
     app_config.admin.password as string
   );
 
@@ -37,9 +37,9 @@ export async function seedAdmin() {
     const [inserted_user] = await tx
       .insert(User)
       .values({
-        email: adminEmail as string,
-        password: hashedPassword,
-        role: adminRole,
+        email: admin_email as string,
+        password: hashed_password,
+        role: admin_role,
         is_verified: true,
         need_to_reset_pass: false,
       })
@@ -53,7 +53,6 @@ export async function seedAdmin() {
       phone: "01795377643",
       user_id: inserted_user.id,
       is_deleted: false,
-      createdAt: new Date(),
     });
 
     // 3. Insert user authentication

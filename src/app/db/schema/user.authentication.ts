@@ -19,6 +19,8 @@ export const UserAuthentication = pgTable(
       .notNull()
       .unique() // ensures one-to-one
       .references(() => User.id, { onDelete: "cascade" }),
+    created_at: timestamp("created_at").defaultNow().notNull(),
+    updated_at: timestamp("updated_at").defaultNow().notNull(),
   },
   (table) => [uniqueIndex("user_authentication_user_id_idx").on(table.user_id)]
 );

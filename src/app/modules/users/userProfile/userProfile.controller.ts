@@ -3,27 +3,13 @@ import catchAsync from "../../../utils/serverTools/catchAsync";
 import sendResponse from "../../../utils/serverTools/sendResponse";
 import { UserProfileService } from "./userProfile.service";
 
-const updateProfileImage = catchAsync(async (req, res) => {
-  const filePath = req.file?.path;
-
-  const result = await UserProfileService.updateProfileImage(
-    filePath as string,
-    req.user.userEmail
-  );
-  sendResponse(res, {
-    success: true,
-    statusCode: status.OK,
-    message: "Profile image changed successfully.",
-    data: result,
-  });
-});
-
-const updateProfileData = catchAsync(async (req, res) => {
+const updateProfile = catchAsync(async (req, res) => {
   const userData = req.body;
-
+  const filePath = req.file?.path;
   const result = await UserProfileService.updateProfileData(
     userData,
-    req.user.userId
+    req.user.user_id,
+    filePath
   );
   sendResponse(res, {
     success: true,
@@ -33,4 +19,4 @@ const updateProfileData = catchAsync(async (req, res) => {
   });
 });
 
-export const UserProfileController = { updateProfileData, updateProfileImage };
+export const UserProfileController = { updateProfile };

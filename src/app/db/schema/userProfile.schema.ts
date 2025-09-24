@@ -21,9 +21,10 @@ export const UserProfile = pgTable(
     phone: varchar("phone"),
     address: varchar("address"),
     image: varchar("image"),
+    image_id: varchar("image_id"),
     is_deleted: boolean("is_deleted").default(false),
-    createdAt: timestamp("createdAt").defaultNow().notNull(),
-    updatedAt: timestamp("updatedAt").defaultNow().notNull(),
+    created_at: timestamp("created_at").defaultNow().notNull(),
+    updated_at: timestamp("updated_at").defaultNow().notNull(),
     user_id: uuid("user_id")
       .notNull()
       .unique() // ensures one-to-one

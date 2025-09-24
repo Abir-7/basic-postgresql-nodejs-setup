@@ -6,16 +6,9 @@ import { UserProfileController } from "./userProfile.controller";
 const router = Router();
 
 router.patch(
-  "/update-profile-image",
+  "/update-profile",
   auth("SUPERADMIN", "USER"),
-  upload.single("image"),
-  UserProfileController.updateProfileImage
-);
-
-router.patch(
-  "/update-profile-data",
-  auth("SUPERADMIN", "USER"),
-  UserProfileController.updateProfileData
+  UserProfileController.updateProfile
 );
 
 export const UserProfileRoute = router;

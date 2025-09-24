@@ -24,9 +24,9 @@ export const initSocket = async (httpServer: HttpServer) => {
   });
 
   // ------------------- Redis Adapter -------------------
-  const pubClient = redis;
-  const subClient = pubClient.duplicate();
-  io.adapter(createAdapter(pubClient, subClient));
+  const pub_client = redis;
+  const sub_client = pub_client.duplicate();
+  io.adapter(createAdapter(pub_client, sub_client));
 
   // ------------------- JWT Auth -------------------
   io.use((socket, next) => {
